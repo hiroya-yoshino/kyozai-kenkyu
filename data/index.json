@@ -50,7 +50,7 @@
               "hours": 8,
               "month": "6月",
               "term": 1,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -60,7 +60,7 @@
               "hours": 6,
               "month": "6〜7月",
               "term": 1,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "event",
@@ -91,7 +91,7 @@
               "hours": 13,
               "month": "9〜10月",
               "term": 2,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -101,7 +101,7 @@
               "hours": 5,
               "month": "10〜11月",
               "term": 2,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",
