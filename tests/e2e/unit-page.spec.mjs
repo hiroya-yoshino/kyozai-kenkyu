@@ -98,25 +98,28 @@ test('参考資料がない単元では参考資料欄を出さない', async ({
   await expect(page.locator('section.sources')).toHaveCount(0);
 });
 
-test('次（まとまり）と評価規準がある時間はそれを表示し、ない時間は出さない', async ({ page }) => {
+test('次がある時間は次を表示し、評価規準は「評価」ボタンのポップアップで見る', async ({ page }) => {
   await page.goto(URL99);
   const l1 = page.locator('details.lesson[data-n="1"]');
   await l1.locator('summary').click();
   await expect(l1.locator('.lesson-stage')).toHaveText('第1次　テストの次');
-  await expect(l1.locator('.lesson-body')).toContainText('評価');
-  await expect(l1.locator('.lesson-body')).toContainText('思①（発言分析）：テストの評価規準');
+  await expect(l1.locator('.lesson-body')).not.toContainText('思①（発言分析）：テストの評価規準');
+  const before = page.url();
+  await l1.getByRole('button', { name: '評価' }).click();
+  const dlg = page.locator('dialog#evaluation');
+  await expect(dlg).toBeVisible();
+  await expect(dlg).toContainText('第1時の評価');
+  await expect(dlg).toContainText('思①（発言分析）：テストの評価規準');
+  expect(page.url()).toBe(before);
+  await dlg.getByRole('button', { name: '閉じる' }).click();
+  await expect(dlg).toBeHidden();
+  await expect(l1).toHaveAttribute('open', '');
+});
+
+test('評価規準のない時間には「評価」ボタンも次も出さない', async ({ page }) => {
+  await page.goto(URL99);
   const l2 = page.locator('details.lesson[data-n="2"]');
   await l2.locator('summary').click();
   await expect(l2.locator('.lesson-stage')).toHaveCount(0);
-  await expect(l2.locator('.lesson-body dt', { hasText: '評価' })).toHaveCount(0);
-});
-
-test('実験のない時間にも図を出せ、押すとポップアップで開く', async ({ page }) => {
-  await page.goto(URL99);
-  const l1 = page.locator('details.lesson[data-n="1"]');
-  await l1.locator('summary').click();
-  await expect(l1.locator('section.experiment')).toHaveCount(0);
-  await expect(l1.locator('figure figcaption')).toHaveText('第1時の資料図');
-  await l1.locator('figure button.figure-open').click();
-  await expect(page.locator('dialog#figure')).toContainText('第1時の資料図');
+  await expect(l2.getByRole('button', { name: '評価' })).toHaveCount(0);
 });

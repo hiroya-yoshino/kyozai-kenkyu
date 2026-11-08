@@ -46,6 +46,13 @@ export function openFigure(fig) {
   showKeepingScroll(d);
 }
 
+export function openEvaluation(n, text) {
+  const d = dialogEl('evaluation');
+  d.querySelector('#evaluation-title').textContent = `第${n}時の評価`;
+  d.querySelector('.evaluation-text').textContent = text;
+  showKeepingScroll(d);
+}
+
 export function closeGoals() {
   const d = document.getElementById('goals');
   if (d?.open) d.close();

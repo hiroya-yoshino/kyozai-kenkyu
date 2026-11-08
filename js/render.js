@@ -1,7 +1,7 @@
 // データから画面を組み立てる。
 import { buildHash } from './router.js';
 import { findGrade } from './data.js';
-import { openGoals, openFigure } from './modal.js';
+import { openGoals, openFigure, openEvaluation } from './modal.js';
 
 const TERMS = { 1: '1学期', 2: '2学期', 3: '3学期' };
 
@@ -108,8 +108,9 @@ function renderLesson(lesson) {
     h('dl', { class: 'lesson-body' },
       h('dt', {}, 'めあて'), h('dd', {}, lesson.aim),
       h('dt', {}, '活動'), h('dd', {}, h('ul', {}, lesson.activities.map((a) => h('li', {}, a)))),
-      h('dt', {}, 'まとめ'), h('dd', {}, lesson.summary),
-      lesson.evaluation ? [h('dt', {}, '評価'), h('dd', { class: 'lesson-eval' }, lesson.evaluation)] : null),
+      h('dt', {}, 'まとめ'), h('dd', {}, lesson.summary)),
+    lesson.evaluation ? h('div', { class: 'lesson-actions' },
+      h('button', { type: 'button', class: 'button eval-button', onclick: () => openEvaluation(lesson.n, lesson.evaluation) }, '評価')) : null,
     lesson.figure ? h('div', { class: 'lesson-figure' }, renderFigure(lesson.figure)) : null,
     lesson.experiment ? renderExperiment(lesson.experiment) : null);
 }
