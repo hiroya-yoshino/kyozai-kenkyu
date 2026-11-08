@@ -1,0 +1,11 @@
+{
+  "name": "kyozai-kenkyu",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/unit/*.test.mjs && node tools/check-data.mjs",
+    "test:data": "node tools/check-data.mjs",
+    "test:e2e": "playwright test",
+    "serve": "node tools/serve.mjs"
+  }
+}
