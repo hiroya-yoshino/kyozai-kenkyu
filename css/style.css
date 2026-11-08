@@ -215,3 +215,4 @@ a { color: inherit; }
 .sources a { color: var(--accent); }
 .lesson-stage { margin: 12px 18px 0; font-size: .85rem; font-weight: 700; color: var(--ink-soft); }
 .lesson-eval { font-size: .92rem; color: var(--ink-soft); }
+.lesson-figure { margin: 4px 14px 14px; }

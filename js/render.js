@@ -110,6 +110,7 @@ function renderLesson(lesson) {
       h('dt', {}, '活動'), h('dd', {}, h('ul', {}, lesson.activities.map((a) => h('li', {}, a)))),
       h('dt', {}, 'まとめ'), h('dd', {}, lesson.summary),
       lesson.evaluation ? [h('dt', {}, '評価'), h('dd', { class: 'lesson-eval' }, lesson.evaluation)] : null),
+    lesson.figure ? h('div', { class: 'lesson-figure' }, renderFigure(lesson.figure)) : null,
     lesson.experiment ? renderExperiment(lesson.experiment) : null);
 }
 

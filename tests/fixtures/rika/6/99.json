@@ -23,7 +23,11 @@
       ],
       "summary": "第1時のまとめ",
       "stage": "第1次　テストの次",
-      "evaluation": "思①（発言分析）：テストの評価規準"
+      "evaluation": "思①（発言分析）：テストの評価規準",
+      "figure": {
+        "src": "tests/fixtures/figure.svg",
+        "caption": "第1時の資料図"
+      }
     },
     {
       "n": 2,

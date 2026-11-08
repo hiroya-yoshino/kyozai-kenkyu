@@ -43,3 +43,8 @@ test('参考資料は title が必要', () => {
   const u = validUnit(); u.sources = [{ url: 'https://example.com' }];
   assert.ok(validateUnit(u, () => true).includes('sources[0] の title がありません'));
 });
+
+test('実験のない時間の図もファイルの有無を調べる', () => {
+  const u = validUnit(); u.lessons[0].figure = { src: 'figures/rika/6/x.svg', caption: 'c' };
+  assert.ok(validateUnit(u, (src) => src !== 'figures/rika/6/x.svg').includes('図が見つかりません: figures/rika/6/x.svg'));
+});

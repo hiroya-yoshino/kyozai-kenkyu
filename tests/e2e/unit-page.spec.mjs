@@ -110,3 +110,13 @@ test('次（まとまり）と評価規準がある時間はそれを表示し�
   await expect(l2.locator('.lesson-stage')).toHaveCount(0);
   await expect(l2.locator('.lesson-body dt', { hasText: '評価' })).toHaveCount(0);
 });
+
+test('実験のない時間にも図を出せ、押すとポップアップで開く', async ({ page }) => {
+  await page.goto(URL99);
+  const l1 = page.locator('details.lesson[data-n="1"]');
+  await l1.locator('summary').click();
+  await expect(l1.locator('section.experiment')).toHaveCount(0);
+  await expect(l1.locator('figure figcaption')).toHaveText('第1時の資料図');
+  await l1.locator('figure button.figure-open').click();
+  await expect(page.locator('dialog#figure')).toContainText('第1時の資料図');
+});

@@ -26,6 +26,9 @@ export function validateUnit(unit, fileExists) {
     if (!Array.isArray(lesson.activities) || lesson.activities.length === 0) {
       errors.push(`第${n}時の activities がありません`);
     }
+    if (lesson.figure && !fileExists(lesson.figure.src)) {
+      errors.push(`図が見つかりません: ${lesson.figure.src}`);
+    }
     const ex = lesson.experiment;
     if (!ex) return;
     if (!Array.isArray(ex.safety) || ex.safety.length === 0) {

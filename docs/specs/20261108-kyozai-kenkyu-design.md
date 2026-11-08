@@ -119,7 +119,7 @@ docs/specs/           設計書
 }
 ```
 
-任意の項目：各時間の `stage`（次）と `evaluation`（評価規準）、単元の `sources`（参考資料：title・url・note）。画面では、次・評価・参考資料として表示する。
+任意の項目：各時間の `stage`（次）・`evaluation`（評価規準）・`figure`（実験のない時間の図）、単元の `sources`（参考資料：title・url・note）。画面では、次・評価・参考資料として表示する。
 
 ルール
 - `lessons` の数は `hours` と一致する
