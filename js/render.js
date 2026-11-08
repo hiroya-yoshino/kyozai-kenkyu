@@ -1,7 +1,7 @@
 // データから画面を組み立てる。
 import { buildHash } from './router.js';
 import { findGrade } from './data.js';
-import { openGoals } from './modal.js';
+import { openGoals, openFigure } from './modal.js';
 
 const TERMS = { 1: '1学期', 2: '2学期', 3: '3学期' };
 
@@ -113,7 +113,7 @@ function renderExperiment(ex) {
 
 function renderFigure(fig) {
   const img = h('img', { src: fig.src, alt: fig.caption, loading: 'lazy' });
-  const link = h('a', { href: fig.src, target: '_blank', rel: 'noopener', title: '図を大きく開く' }, img);
+  const link = h('button', { type: 'button', class: 'figure-open', 'aria-label': `図を大きく表示：${fig.caption}`, onclick: () => openFigure(fig) }, img);
   const hint = h('p', { class: 'figure-hint' }, '図を押すと大きく開きます');
   img.addEventListener('error', () => { link.remove(); hint.remove(); });
   return h('figure', { class: 'figure' }, link, h('figcaption', {}, fig.caption), hint);

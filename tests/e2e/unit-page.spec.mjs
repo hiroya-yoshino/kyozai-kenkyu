@@ -58,11 +58,28 @@ test('目標ボタンがある', async ({ page }) => {
   await expect(page.locator('button#open-goals')).toBeVisible();
 });
 
-test('図を押すと大きく開ける（図ファイルへのリンク、新しいタブ）', async ({ page }) => {
+test('図を押すとページはそのままでポップアップに大きく表示され、×で戻る', async ({ page }) => {
   await page.goto(URL99);
   await page.locator('details.lesson[data-n="2"] summary').click();
-  const link = page.locator('details.lesson[data-n="2"] figure a');
-  await expect(link).toHaveAttribute('href', 'tests/fixtures/figure.svg');
-  await expect(link).toHaveAttribute('target', '_blank');
-  await expect(link.locator('img')).toHaveCount(1);
+  const before = page.url();
+  const pages = page.context().pages().length;
+  await page.locator('details.lesson[data-n="2"] figure button.figure-open').click();
+  const dlg = page.locator('dialog#figure');
+  await expect(dlg).toBeVisible();
+  await expect(dlg.locator('img')).toHaveAttribute('src', 'tests/fixtures/figure.svg');
+  await expect(dlg).toContainText('テスト図の説明');
+  expect(page.url()).toBe(before);
+  expect(page.context().pages().length).toBe(pages);
+  await dlg.getByRole('button', { name: '閉じる' }).click();
+  await expect(dlg).toBeHidden();
+  await expect(page.locator('details.lesson[data-n="2"]')).toHaveAttribute('open', '');
+});
+
+test('図のポップアップは外側・Escでも閉じる', async ({ page }) => {
+  await page.goto(URL99);
+  await page.locator('details.lesson[data-n="2"] summary').click();
+  const open = () => page.locator('details.lesson[data-n="2"] figure button.figure-open').click();
+  const dlg = page.locator('dialog#figure');
+  await open(); await page.keyboard.press('Escape'); await expect(dlg).toBeHidden();
+  await open(); await page.mouse.click(3, 3); await expect(dlg).toBeHidden();
 });
