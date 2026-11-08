@@ -5,7 +5,7 @@ function dataBase() {
 
 let indexPromise;
 export function loadIndex() {
-  indexPromise ??= fetch('data/index.json').then((r) => {
+  indexPromise ??= fetch('data/index.json', { cache: 'no-cache' }).then((r) => {
     if (!r.ok) throw new Error(`index.json: ${r.status}`);
     return r.json();
   }).catch((err) => {
@@ -17,7 +17,7 @@ export function loadIndex() {
 
 export async function loadUnit(subject, grade, unitId) {
   try {
-    const r = await fetch(`${dataBase()}${subject}/${grade}/${unitId}.json`);
+    const r = await fetch(`${dataBase()}${subject}/${grade}/${unitId}.json`, { cache: 'no-cache' });
     return r.ok ? await r.json() : null;
   } catch {
     return null;
