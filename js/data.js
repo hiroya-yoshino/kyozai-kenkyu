@@ -8,6 +8,9 @@ export function loadIndex() {
   indexPromise ??= fetch('data/index.json').then((r) => {
     if (!r.ok) throw new Error(`index.json: ${r.status}`);
     return r.json();
+  }).catch((err) => {
+    indexPromise = undefined; // 次の読み込みでやり直せるように
+    throw err;
   });
   return indexPromise;
 }

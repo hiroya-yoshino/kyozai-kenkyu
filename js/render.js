@@ -116,3 +116,10 @@ function renderFigure(fig) {
   img.addEventListener('error', () => img.remove());
   return h('figure', { class: 'figure' }, img, h('figcaption', {}, fig.caption));
 }
+
+export function renderLoadError(el, onRetry) {
+  el.replaceChildren(h('div', { class: 'not-ready' },
+    h('h1', { class: 'page-title' }, 'データを読み込めませんでした'),
+    h('p', {}, '通信の状態を確かめてから、もう一度読み込んでください。'),
+    h('button', { type: 'button', class: 'button', onclick: onRetry }, '再読み込み')));
+}
