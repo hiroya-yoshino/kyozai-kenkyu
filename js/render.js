@@ -113,8 +113,10 @@ function renderExperiment(ex) {
 
 function renderFigure(fig) {
   const img = h('img', { src: fig.src, alt: fig.caption, loading: 'lazy' });
-  img.addEventListener('error', () => img.remove());
-  return h('figure', { class: 'figure' }, img, h('figcaption', {}, fig.caption));
+  const link = h('a', { href: fig.src, target: '_blank', rel: 'noopener', title: '図を大きく開く' }, img);
+  const hint = h('p', { class: 'figure-hint' }, '図を押すと大きく開きます');
+  img.addEventListener('error', () => { link.remove(); hint.remove(); });
+  return h('figure', { class: 'figure' }, link, h('figcaption', {}, fig.caption), hint);
 }
 
 export function renderLoadError(el, onRetry) {

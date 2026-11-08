@@ -166,13 +166,17 @@ a { color: inherit; }
 .experiment h3 { margin: 0 0 8px; font-size: 1.05rem; color: var(--accent); }
 .experiment h4 { margin: 14px 0 4px; font-size: .95rem; }
 .experiment ul, .experiment ol { margin: 0; padding-left: 1.4em; }
-.materials { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.materials { columns: 2 11em; column-gap: 24px; }
+.materials li { break-inside: avoid; }
 .safety-title { color: var(--safety); }
 .safety-title::before { content: "⚠ "; }
 .safety { background: var(--safety-soft); border-left: 4px solid var(--safety); border-radius: 0 var(--radius-s) var(--radius-s) 0; padding: 8px 12px 8px 2em !important; }
 .figure { margin: 0 0 6px; text-align: center; }
 .figure img { max-width: 100%; height: auto; max-height: 360px; background: #fff; }
+.figure a { display: block; cursor: zoom-in; }
 .figure figcaption { font-size: .85rem; color: var(--ink-soft); }
+.figure-hint { margin: 0; font-size: .78rem; color: var(--ink-soft); }
+@media (min-width: 768px) { .figure-hint { display: none; } }
 
 /* 目標ポップアップ */
 .goals-dialog { padding: 0; border: none; border-radius: var(--radius-m); width: min(560px, calc(100vw - 32px)); color: var(--ink); }

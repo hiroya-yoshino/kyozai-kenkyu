@@ -57,3 +57,12 @@ test('目標ボタンがある', async ({ page }) => {
   await page.goto(URL99);
   await expect(page.locator('button#open-goals')).toBeVisible();
 });
+
+test('図を押すと大きく開ける（図ファイルへのリンク、新しいタブ）', async ({ page }) => {
+  await page.goto(URL99);
+  await page.locator('details.lesson[data-n="2"] summary').click();
+  const link = page.locator('details.lesson[data-n="2"] figure a');
+  await expect(link).toHaveAttribute('href', 'tests/fixtures/figure.svg');
+  await expect(link).toHaveAttribute('target', '_blank');
+  await expect(link.locator('img')).toHaveCount(1);
+});
