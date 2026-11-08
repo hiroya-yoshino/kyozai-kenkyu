@@ -131,7 +131,7 @@
               "hours": 13,
               "month": "2〜3月",
               "term": 3,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -141,7 +141,7 @@
               "hours": 4,
               "month": "3月",
               "term": 3,
-              "status": "preparing"
+              "status": "ready"
             }
           ]
         }

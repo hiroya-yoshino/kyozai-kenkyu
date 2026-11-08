@@ -28,11 +28,11 @@ test('5年タブは準備中', async ({ page }) => {
   await expect(page.locator('main')).toContainText('準備中');
 });
 
-test('準備中の単元を直接開くと準備中表示と一覧へ戻るボタン', async ({ page }) => {
-  await page.goto('./#/rika/6/05');
+test('準備中の学年の単元を直接開くと準備中表示と一覧へ戻るボタン', async ({ page }) => {
+  await page.goto('./#/rika/5/01');
   await expect(page.locator('main')).toContainText('この単元はまだ準備中です');
   await page.getByRole('link', { name: '単元一覧へ戻る' }).click();
-  await expect(page).toHaveURL(/#\/rika\/6$/);
+  await expect(page).toHaveURL(/#\/rika\/5$/);
 });
 
 test('存在しない単元も準備中表示', async ({ page }) => {
