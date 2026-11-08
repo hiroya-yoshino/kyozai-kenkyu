@@ -1,0 +1,52 @@
+{
+  "id": "98",
+  "title": "テスト単元",
+  "hours": 2,
+  "month": "4月",
+  "term": 1,
+  "goals": {
+    "knowledge": "知識の目標文",
+    "thinking": "思考の目標文",
+    "attitude": "態度の目標文"
+  },
+  "intro": {
+    "question": "導入の問い文",
+    "presentation": "提示の仕方の文"
+  },
+  "lessons": [
+    {
+      "n": 1,
+      "aim": "第1時のめあて",
+      "activities": [
+        "活動A",
+        "活動B"
+      ],
+      "summary": "第1時のまとめ"
+    },
+    {
+      "n": 2,
+      "aim": "第2時のめあて",
+      "activities": [
+        "活動C"
+      ],
+      "summary": "第2時のまとめ",
+      "experiment": {
+        "materials": [
+          "集気びん",
+          "ろうそく"
+        ],
+        "steps": [
+          "手順1",
+          "手順2"
+        ],
+        "safety": [
+          "火の近くに燃えやすいものを置かない"
+        ],
+        "figure": {
+          "src": "tests/fixtures/missing.svg",
+          "caption": "テスト図の説明"
+        }
+      }
+    }
+  ]
+}

@@ -62,3 +62,55 @@ export function renderNotReady(el, backHash) {
     h('p', {}, 'この単元はまだ準備中です'),
     h('a', { class: 'button', href: backHash }, '単元一覧へ戻る')));
 }
+
+export function renderUnit(el, unit, backHash) {
+  const lessons = unit.lessons.map(renderLesson);
+  const tocLink = (label, target) => h('a', { href: location.hash, onclick: (e) => {
+    e.preventDefault();
+    if (target.tagName === 'DETAILS') target.open = true;
+    target.scrollIntoView({ block: 'start' });
+  } }, label);
+
+  const intro = h('section', { class: 'intro', id: 'intro' },
+    h('h2', {}, '導入のアイデア'),
+    h('dl', {},
+      h('dt', {}, '問い'), h('dd', {}, unit.intro.question),
+      unit.intro.presentation ? [h('dt', {}, '提示の仕方'), h('dd', {}, unit.intro.presentation)] : null));
+
+  el.replaceChildren(h('article', { class: 'unit' },
+    h('a', { class: 'back-link', href: backHash }, '← 単元一覧'),
+    h('header', { class: 'unit-header' },
+      h('h1', { class: 'page-title' }, unit.title),
+      h('p', { class: 'unit-meta' }, h('span', {}, `${unit.hours}時間`), h('span', {}, unit.month)),
+      h('button', { id: 'open-goals', type: 'button', class: 'button goals-button' }, '🎯 目標')),
+    h('nav', { class: 'toc', 'aria-label': '目次' },
+      tocLink('導入', intro), unit.lessons.map((l, i) => tocLink(`第${l.n}時`, lessons[i]))),
+    intro,
+    h('section', { class: 'lessons' }, h('h2', {}, '毎時間の流れ'), lessons)));
+}
+
+function renderLesson(lesson) {
+  return h('details', { class: 'lesson', 'data-n': String(lesson.n), id: `lesson-${lesson.n}` },
+    h('summary', {}, h('span', { class: 'lesson-no' }, `第${lesson.n}時`), h('span', { class: 'lesson-aim' }, lesson.aim),
+      lesson.experiment ? h('span', { class: 'badge badge-ex' }, '実験') : null),
+    h('dl', { class: 'lesson-body' },
+      h('dt', {}, 'めあて'), h('dd', {}, lesson.aim),
+      h('dt', {}, '活動'), h('dd', {}, h('ul', {}, lesson.activities.map((a) => h('li', {}, a)))),
+      h('dt', {}, 'まとめ'), h('dd', {}, lesson.summary)),
+    lesson.experiment ? renderExperiment(lesson.experiment) : null);
+}
+
+function renderExperiment(ex) {
+  return h('section', { class: 'experiment' },
+    h('h3', {}, '実験'),
+    ex.figure ? renderFigure(ex.figure) : null,
+    h('h4', {}, '準備物'), h('ul', { class: 'materials' }, ex.materials.map((m) => h('li', {}, m))),
+    h('h4', {}, '手順'), h('ol', { class: 'steps' }, ex.steps.map((s) => h('li', {}, s))),
+    h('h4', { class: 'safety-title' }, '安全上の注意'), h('ul', { class: 'safety' }, ex.safety.map((s) => h('li', {}, s))));
+}
+
+function renderFigure(fig) {
+  const img = h('img', { src: fig.src, alt: fig.caption, loading: 'lazy' });
+  img.addEventListener('error', () => img.remove());
+  return h('figure', { class: 'figure' }, img, h('figcaption', {}, fig.caption));
+}

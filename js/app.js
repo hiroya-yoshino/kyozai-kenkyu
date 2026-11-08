@@ -1,7 +1,7 @@
 // 起動とハッシュ変更の処理。
 import { parseHash, buildHash } from './router.js';
 import { loadIndex, loadUnit, findItem } from './data.js';
-import { renderHome, renderUnitList, renderNotReady } from './render.js';
+import { renderHome, renderUnitList, renderNotReady, renderUnit } from './render.js';
 
 const main = document.getElementById('app');
 const side = document.getElementById('side');
@@ -25,7 +25,7 @@ async function showUnit(r, index) {
   const fixtures = new URLSearchParams(location.search).has('fixtures');
   const unit = (item?.status === 'ready' || fixtures) ? await loadUnit(r.subject, r.grade, r.unitId) : null;
   if (!unit) { renderNotReady(main, back); return; }
-  renderNotReady(main, back); // Task 4 で単元ページに置き換える
+  renderUnit(main, unit, back);
 }
 
 window.addEventListener('hashchange', route);
