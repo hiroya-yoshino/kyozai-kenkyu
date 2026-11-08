@@ -111,7 +111,7 @@
               "hours": 15,
               "month": "11〜12月",
               "term": 2,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -121,7 +121,7 @@
               "hours": 9,
               "month": "1月",
               "term": 3,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",

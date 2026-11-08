@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 386" role="img" aria-label="水そうに土を流しこんで地層のでき方を調べるモデル実験" font-family="'Hiragino Sans','Yu Gothic','Noto Sans JP',Meiryo,sans-serif">
+<title>水そうに土を流しこんで地層のでき方を調べるモデル実験</title>
+<defs>
+<marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1e7f6e"/></marker>
+<pattern id="clay" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#efe7dc"/><path d="M0,8 L8,0" stroke="#b9a68c" stroke-width="1"/></pattern>
+<pattern id="water" width="10" height="6" patternUnits="userSpaceOnUse"><rect width="10" height="6" fill="#e6f1f7"/><path d="M0,3 q2.5,-2 5,0 t5,0" fill="none" stroke="#8fb3c9" stroke-width="1"/></pattern>
+</defs>
+<rect width="680" height="386" fill="#fff"/>
+<defs>
+<pattern id="gravel" width="24" height="16" patternUnits="userSpaceOnUse"><rect width="24" height="16" fill="#e9dcc8"/><circle cx="6" cy="6" r="4" fill="#b8a07e"/><circle cx="17" cy="11" r="3.5" fill="#a88e6a"/></pattern>
+<pattern id="sand" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#f3e3b8"/><circle cx="2" cy="3" r="1" fill="#c9ae6e"/><circle cx="7" cy="7" r="1" fill="#c9ae6e"/></pattern>
+<pattern id="mud" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#c9b8a6"/><path d="M0,5 h10" stroke="#a8957f" stroke-width="1"/></pattern>
+<pattern id="ash" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#e6e6e6"/><path d="M2,2 l3,2 l-2,3 z" fill="#9aa3ad"/></pattern>
+</defs><text x="340" y="28" font-size="16" fill="#1f2a44" text-anchor="middle" font-weight="bold">水のはたらきで地層ができるか調べる</text><rect x="200" y="90" width="300" height="230" fill="url(#water)" stroke="#1f2a44" stroke-width="3"/><rect x="203" y="276" width="294" height="12" fill="url(#mud)"/><rect x="203" y="288" width="294" height="14" fill="url(#sand)"/><rect x="203" y="302" width="294" height="15" fill="url(#gravel)"/><line x1="60" y1="70" x2="250" y2="170" stroke="#8a6d43" stroke-width="10" stroke-linecap="round"/><text x="120" y="64" font-size="13" fill="#5b6573" text-anchor="middle" font-weight="normal">とい</text><path d="M40,40 l40,10 l-6,20 l-40,-10 z" fill="#d9c7a4" stroke="#1f2a44"/><text x="60" y="30" font-size="12" fill="#1f2a44" text-anchor="middle" font-weight="normal">土と水を流しこむ</text><text x="520" y="284" font-size="13" fill="#1f2a44" text-anchor="start" font-weight="bold">どろ</text><text x="520" y="300" font-size="13" fill="#1f2a44" text-anchor="start" font-weight="bold">砂</text><text x="520" y="316" font-size="13" fill="#1f2a44" text-anchor="start" font-weight="bold">れき</text><text x="350" y="350" font-size="13" fill="#1e7f6e" text-anchor="middle" font-weight="bold">つぶの大きいもの（れき）から先にしずみ、層に分かれて積もる</text><text x="350" y="370" font-size="12" fill="#5b6573" text-anchor="middle" font-weight="normal">もう一度流しこむと、その上に層が重なる</text>
+</svg>
