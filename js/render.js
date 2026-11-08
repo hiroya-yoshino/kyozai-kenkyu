@@ -1,6 +1,7 @@
 // データから画面を組み立てる。
 import { buildHash } from './router.js';
 import { findGrade } from './data.js';
+import { openGoals } from './modal.js';
 
 const TERMS = { 1: '1学期', 2: '2学期', 3: '3学期' };
 
@@ -82,7 +83,7 @@ export function renderUnit(el, unit, backHash) {
     h('header', { class: 'unit-header' },
       h('h1', { class: 'page-title' }, unit.title),
       h('p', { class: 'unit-meta' }, h('span', {}, `${unit.hours}時間`), h('span', {}, unit.month)),
-      h('button', { id: 'open-goals', type: 'button', class: 'button goals-button' }, '🎯 目標')),
+      h('button', { id: 'open-goals', type: 'button', class: 'button goals-button', onclick: () => openGoals(unit.goals) }, '🎯 目標')),
     h('nav', { class: 'toc', 'aria-label': '目次' },
       tocLink('導入', intro), unit.lessons.map((l, i) => tocLink(`第${l.n}時`, lessons[i]))),
     intro,
