@@ -7,5 +7,8 @@
     "test:data": "node tools/check-data.mjs",
     "test:e2e": "playwright test",
     "serve": "node tools/serve.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0"
   }
 }
