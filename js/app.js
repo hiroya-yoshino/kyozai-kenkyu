@@ -13,10 +13,11 @@ async function route() {
   if (!known) { location.replace(buildHash({ view: 'home' })); return; }
 
   side.hidden = true;
+  side.replaceChildren();
   if (r.view === 'home') renderHome(main, index);
   else if (r.view === 'list') renderUnitList(main, index, r.subject, r.grade);
   else await showUnit(r, index);
-  document.title = `${document.querySelector('h1')?.textContent ?? ''}｜教材研究ノート`;
+  document.title = `${main.querySelector('h1')?.textContent ?? ''}｜教材研究ノート`;
 }
 
 async function showUnit(r, index) {
@@ -25,7 +26,10 @@ async function showUnit(r, index) {
   const fixtures = new URLSearchParams(location.search).has('fixtures');
   const unit = (item?.status === 'ready' || fixtures) ? await loadUnit(r.subject, r.grade, r.unitId) : null;
   if (!unit) { renderNotReady(main, back); return; }
+  renderUnitList(side, index, r.subject, r.grade, r.unitId);
+  side.hidden = false;
   renderUnit(main, unit, back);
+  window.scrollTo(0, 0);
 }
 
 window.addEventListener('hashchange', route);

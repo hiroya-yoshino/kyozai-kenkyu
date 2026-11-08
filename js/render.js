@@ -28,6 +28,7 @@ export function renderHome(el, index) {
 }
 
 export function renderUnitList(el, index, subject, grade, currentUnitId = null) {
+  const titleTag = currentUnitId ? 'h2' : 'h1';
   const s = index.subjects.find((x) => x.id === subject);
   const tabs = h('div', { class: 'grade-tabs', role: 'tablist' }, (s?.grades ?? []).map((g) =>
     h('a', { role: 'tab', class: 'grade-tab', href: buildHash({ view: 'list', subject, grade: g.grade }),
@@ -42,7 +43,7 @@ export function renderUnitList(el, index, subject, grade, currentUnitId = null) 
         h('h2', { class: 'term-title' }, TERMS[term]),
         h('ol', { class: 'unit-list' }, items.map((i) => unitRow(i, subject, grade, currentUnitId))));
     }).filter(Boolean);
-  el.replaceChildren(h('h1', { class: 'page-title' }, `${s?.name ?? ''}　単元一覧`), tabs, ...body);
+  el.replaceChildren(h(titleTag, { class: 'page-title' }, `${s?.name ?? ''}　単元一覧`), tabs, ...body);
 }
 
 function unitRow(item, subject, grade, currentUnitId) {
