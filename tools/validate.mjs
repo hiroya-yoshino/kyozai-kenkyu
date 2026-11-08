@@ -15,6 +15,9 @@ export function validateUnit(unit, fileExists) {
     if (!unit.goals || !unit.goals[key]) errors.push(`goals.${key} がありません`);
   }
   if (!unit.intro || !unit.intro.question) errors.push('intro.question がありません');
+  (unit.sources ?? []).forEach((src, i) => {
+    if (!src.title) errors.push(`sources[${i}] の title がありません`);
+  });
   lessons.forEach((lesson, i) => {
     const n = lesson.n ?? i + 1;
     for (const key of ['aim', 'summary']) {

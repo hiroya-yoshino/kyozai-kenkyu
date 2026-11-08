@@ -21,7 +21,9 @@
         "活動A",
         "活動B"
       ],
-      "summary": "第1時のまとめ"
+      "summary": "第1時のまとめ",
+      "stage": "第1次　テストの次",
+      "evaluation": "思①（発言分析）：テストの評価規準"
     },
     {
       "n": 2,
@@ -47,6 +49,15 @@
           "caption": "テスト図の説明"
         }
       }
+    }
+  ],
+  "sources": [
+    {
+      "title": "テスト資料A",
+      "url": "https://example.com/a.pdf"
+    },
+    {
+      "title": "テスト資料B（URLなし）"
     }
   ]
 }

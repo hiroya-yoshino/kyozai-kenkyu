@@ -83,3 +83,30 @@ test('図のポップアップは外側・Escでも閉じる', async ({ page }) 
   await open(); await page.keyboard.press('Escape'); await expect(dlg).toBeHidden();
   await open(); await page.mouse.click(3, 3); await expect(dlg).toBeHidden();
 });
+
+test('ページの最後に参考資料が出る（URLがあればリンク）', async ({ page }) => {
+  await page.goto(URL99);
+  const src = page.locator('section.sources');
+  await expect(src.getByRole('heading', { name: '参考資料' })).toBeVisible();
+  await expect(src.getByRole('link', { name: 'テスト資料A' })).toHaveAttribute('href', 'https://example.com/a.pdf');
+  await expect(src).toContainText('テスト資料B（URLなし）');
+});
+
+test('参考資料がない単元では参考資料欄を出さない', async ({ page }) => {
+  await page.goto('./?fixtures=1#/rika/6/98');
+  await expect(page.locator('details.lesson').first()).toBeVisible();
+  await expect(page.locator('section.sources')).toHaveCount(0);
+});
+
+test('次（まとまり）と評価規準がある時間はそれを表示し、ない時間は出さない', async ({ page }) => {
+  await page.goto(URL99);
+  const l1 = page.locator('details.lesson[data-n="1"]');
+  await l1.locator('summary').click();
+  await expect(l1.locator('.lesson-stage')).toHaveText('第1次　テストの次');
+  await expect(l1.locator('.lesson-body')).toContainText('評価');
+  await expect(l1.locator('.lesson-body')).toContainText('思①（発言分析）：テストの評価規準');
+  const l2 = page.locator('details.lesson[data-n="2"]');
+  await l2.locator('summary').click();
+  await expect(l2.locator('.lesson-stage')).toHaveCount(0);
+  await expect(l2.locator('.lesson-body dt', { hasText: '評価' })).toHaveCount(0);
+});

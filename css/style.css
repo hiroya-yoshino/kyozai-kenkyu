@@ -209,3 +209,9 @@ a { color: inherit; }
 .figure-dialog-img { display: block; width: 100%; height: auto; max-height: calc(100vh - 110px); object-fit: contain; background: #fff; }
 .figure-dialog-hint { display: none; margin: 8px 0 0; font-size: .82rem; color: var(--ink-soft); text-align: center; }
 @media (max-width: 767.98px) and (orientation: portrait) { .figure-dialog-hint { display: block; } }
+.sources { margin-top: 32px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .9rem; color: var(--ink-soft); }
+.sources h2 { font-size: 1rem; margin: 0 0 6px; color: var(--ink); }
+.sources ul { margin: 0; padding-left: 1.2em; }
+.sources a { color: var(--accent); }
+.lesson-stage { margin: 12px 18px 0; font-size: .85rem; font-weight: 700; color: var(--ink-soft); }
+.lesson-eval { font-size: .92rem; color: var(--ink-soft); }

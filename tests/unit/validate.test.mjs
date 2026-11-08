@@ -38,3 +38,8 @@ test('実験に安全上の注意がない', () => {
   const u = validUnit(); u.lessons[1].experiment.safety = [];
   assert.ok(validateUnit(u, () => true).includes('第2時の実験に safety がありません'));
 });
+
+test('参考資料は title が必要', () => {
+  const u = validUnit(); u.sources = [{ url: 'https://example.com' }];
+  assert.ok(validateUnit(u, () => true).includes('sources[0] の title がありません'));
+});

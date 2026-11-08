@@ -88,17 +88,28 @@ export function renderUnit(el, unit, backHash) {
     h('nav', { class: 'toc', 'aria-label': '目次' },
       tocLink('導入', intro), unit.lessons.map((l, i) => tocLink(`第${l.n}時`, lessons[i]))),
     intro,
-    h('section', { class: 'lessons' }, h('h2', {}, '毎時間の流れ'), lessons)));
+    h('section', { class: 'lessons' }, h('h2', {}, '毎時間の流れ'), lessons),
+    unit.sources?.length ? renderSources(unit.sources) : null));
+}
+
+function renderSources(sources) {
+  return h('section', { class: 'sources' },
+    h('h2', {}, '参考資料'),
+    h('ul', {}, sources.map((src) => h('li', {},
+      src.url ? h('a', { href: src.url, target: '_blank', rel: 'noopener' }, src.title) : src.title,
+      src.note ? h('span', { class: 'source-note' }, `（${src.note}）`) : null))));
 }
 
 function renderLesson(lesson) {
   return h('details', { class: 'lesson', 'data-n': String(lesson.n), id: `lesson-${lesson.n}` },
     h('summary', {}, h('span', { class: 'lesson-no' }, `第${lesson.n}時`), h('span', { class: 'lesson-aim' }, lesson.aim),
       lesson.experiment ? h('span', { class: 'badge badge-ex' }, '実験') : null),
+    lesson.stage ? h('p', { class: 'lesson-stage' }, lesson.stage) : null,
     h('dl', { class: 'lesson-body' },
       h('dt', {}, 'めあて'), h('dd', {}, lesson.aim),
       h('dt', {}, '活動'), h('dd', {}, h('ul', {}, lesson.activities.map((a) => h('li', {}, a)))),
-      h('dt', {}, 'まとめ'), h('dd', {}, lesson.summary)),
+      h('dt', {}, 'まとめ'), h('dd', {}, lesson.summary),
+      lesson.evaluation ? [h('dt', {}, '評価'), h('dd', { class: 'lesson-eval' }, lesson.evaluation)] : null),
     lesson.experiment ? renderExperiment(lesson.experiment) : null);
 }
 
