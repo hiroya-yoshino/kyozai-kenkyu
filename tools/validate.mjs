@@ -36,5 +36,24 @@ export function validateUnit(unit, fileExists) {
 }
 
 export function validateIndex(index) {
-  return [];
+  const errors = [];
+  if (!Array.isArray(index.subjects)) return ['subjects がありません'];
+  for (const subject of index.subjects) {
+    for (const key of ['id', 'name', 'status']) {
+      if (!subject[key]) errors.push(`教科 ${subject.id ?? '?'} の ${key} がありません`);
+    }
+    for (const g of subject.grades ?? []) {
+      const seen = new Set();
+      for (const item of g.items ?? []) {
+        for (const key of ['kind', 'title', 'hours', 'month', 'term']) {
+          if (item[key] === undefined) errors.push(`${subject.id}/${g.grade} 「${item.title ?? '?'}」の ${key} がありません`);
+        }
+        if (item.kind !== 'unit') continue;
+        if (!item.id || !item.status) errors.push(`${subject.id}/${g.grade} 「${item.title}」の id か status がありません`);
+        if (seen.has(item.id)) errors.push(`${subject.id}/${g.grade} の単元 id が重複しています: ${item.id}`);
+        seen.add(item.id);
+      }
+    }
+  }
+  return errors;
 }

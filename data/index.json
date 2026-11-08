@@ -1,0 +1,163 @@
+{
+  "source": "啓林館「わくわく理科」令和6年度 年間指導計画案（標準案・3学期制）",
+  "subjects": [
+    {
+      "id": "rika",
+      "name": "理科",
+      "status": "ready",
+      "grades": [
+        {
+          "grade": 5,
+          "status": "preparing",
+          "items": []
+        },
+        {
+          "grade": 6,
+          "status": "ready",
+          "items": [
+            {
+              "kind": "event",
+              "title": "理科のガイダンス",
+              "hours": 1,
+              "month": "4月",
+              "term": 1
+            },
+            {
+              "kind": "unit",
+              "id": "01",
+              "no": 1,
+              "title": "ものが燃えるしくみ",
+              "hours": 8,
+              "month": "4月",
+              "term": 1,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "02",
+              "no": 2,
+              "title": "ヒトや動物の体",
+              "hours": 8,
+              "month": "5月",
+              "term": 1,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "03",
+              "no": 3,
+              "title": "植物のつくりとはたらき",
+              "hours": 8,
+              "month": "6月",
+              "term": 1,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "04",
+              "no": 4,
+              "title": "生物どうしのつながり",
+              "hours": 6,
+              "month": "6〜7月",
+              "term": 1,
+              "status": "preparing"
+            },
+            {
+              "kind": "event",
+              "title": "これまでの学習をつなげよう",
+              "hours": 1,
+              "month": "7月",
+              "term": 1
+            },
+            {
+              "kind": "event",
+              "title": "自由研究",
+              "hours": 2,
+              "month": "7月",
+              "term": 1
+            },
+            {
+              "kind": "event",
+              "title": "みんなで使う理科室",
+              "hours": 2,
+              "month": "9月",
+              "term": 2
+            },
+            {
+              "kind": "unit",
+              "id": "05",
+              "no": 5,
+              "title": "水よう液の性質",
+              "hours": 13,
+              "month": "9〜10月",
+              "term": 2,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "06",
+              "no": 6,
+              "title": "月と太陽",
+              "hours": 5,
+              "month": "10〜11月",
+              "term": 2,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "07",
+              "no": 7,
+              "title": "大地のつくりと変化",
+              "hours": 15,
+              "month": "11〜12月",
+              "term": 2,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "08",
+              "no": 8,
+              "title": "てこのはたらき",
+              "hours": 9,
+              "month": "1月",
+              "term": 3,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "09",
+              "no": 9,
+              "title": "発電と電気の利用",
+              "hours": 13,
+              "month": "2〜3月",
+              "term": 3,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "10",
+              "no": 10,
+              "title": "自然とともに生きる",
+              "hours": 4,
+              "month": "3月",
+              "term": 3,
+              "status": "preparing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sansu",
+      "name": "算数",
+      "status": "preparing",
+      "grades": []
+    },
+    {
+      "id": "kokugo",
+      "name": "国語",
+      "status": "preparing",
+      "grades": []
+    }
+  ]
+}
