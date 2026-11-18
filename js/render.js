@@ -66,7 +66,7 @@ export function renderNotReady(el, backHash) {
     h('a', { class: 'button', href: backHash }, '単元一覧へ戻る')));
 }
 
-export function renderUnit(el, unit, backHash, kicker = '') {
+export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null) {
   const intro = h('section', { class: 'intro', id: 'intro' },
     h('h2', { class: 'section-title' }, '導入のアイデア'),
     h('dl', {},
@@ -79,7 +79,11 @@ export function renderUnit(el, unit, backHash, kicker = '') {
       kicker ? h('p', { class: 'unit-kicker' }, kicker) : null,
       h('h1', { class: 'page-title' }, unit.title),
       h('p', { class: 'unit-meta' }, h('span', {}, `全${unit.hours}時間`), h('span', {}, unit.month)),
-      h('button', { id: 'open-goals', type: 'button', class: 'button goals-button', onclick: () => openGoals(unit.goals) }, '単元の目標')),
+      h('div', { class: 'unit-actions' },
+        h('button', { id: 'open-goals', type: 'button', class: 'button goals-button', onclick: () => openGoals(unit.goals) }, '単元の目標'),
+        materialsHash ? h('a', { class: 'button', href: materialsHash }, '準備物') : null,
+        h('button', { type: 'button', class: 'button', onclick: () => window.print() }, '計画表を印刷'))),
+    renderPrintPlan(unit, kicker),
     intro,
     h('section', { class: 'lessons plan' },
       h('h2', { class: 'section-title' }, '指導計画'),
@@ -87,6 +91,20 @@ export function renderUnit(el, unit, backHash, kicker = '') {
         h('span', { class: 'col-n' }, '時'), h('span', { class: 'col-main' }, '次・めあて'), h('span', { class: 'col-eval' }, '評価')),
       unit.lessons.map(renderLesson)),
     unit.sources?.length ? renderSources(unit.sources) : null));
+}
+
+const GOAL_LABELS = [['knowledge', '知識・技能'], ['thinking', '思考・判断・表現'], ['attitude', '主体的に学習に取り組む態度']];
+
+// 印刷用の指導計画表（画面には出さず、印刷のときだけ表示する）
+function renderPrintPlan(unit, kicker) {
+  return h('section', { class: 'print-plan', 'aria-hidden': 'true' },
+    h('p', { class: 'pp-title' }, `${kicker}　${unit.title}（全${unit.hours}時間・${unit.month}）`),
+    h('dl', { class: 'pp-goals' }, GOAL_LABELS.flatMap(([k, label]) => [h('dt', {}, label), h('dd', {}, unit.goals?.[k] ?? '')])),
+    h('table', { class: 'pp-table' },
+      h('thead', {}, h('tr', {}, ['時', '次', 'めあて', 'まとめ', '評価'].map((t) => h('th', {}, t)))),
+      h('tbody', {}, unit.lessons.map((l) => h('tr', {},
+        h('td', { class: 'pp-n' }, String(l.n)), h('td', {}, l.stage ?? ''), h('td', {}, l.aim), h('td', {}, l.summary),
+        h('td', { class: 'pp-eval' }, evalCodes(l.evaluation)))))));
 }
 
 function evalCodes(evaluation) {

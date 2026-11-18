@@ -15,3 +15,9 @@ test('解釈できないものはホーム', () => {
 test('buildHash は parseHash の逆', () => {
   for (const h of ['#/', '#/rika/6', '#/rika/6/05']) assert.equal(buildHash(parseHash(h)), h);
 });
+
+test('準備物の画面', () => {
+  assert.deepEqual(parseHash('#/rika/6/05/junbi'), { view: 'materials', subject: 'rika', grade: 6, unitId: '05' });
+  assert.equal(buildHash({ view: 'materials', subject: 'rika', grade: 6, unitId: '05' }), '#/rika/6/05/junbi');
+  assert.deepEqual(parseHash('#/rika/6/05/xyz'), { view: 'home' });
+});

@@ -243,3 +243,62 @@ a { color: inherit; }
   .lesson { break-inside: avoid; }
 }
 .plan-head .col-n { font-family: var(--gothic); font-size: .8rem; font-weight: 700; color: var(--ink-soft); }
+
+/* 単元ページのボタン */
+.unit-actions { grid-column: 2; grid-row: 2 / span 2; display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.goals-button { grid-column: auto; grid-row: auto; }
+@media (max-width: 479.98px) {
+  .unit-actions { grid-column: 1; grid-row: auto; justify-content: flex-start; margin-top: 12px; }
+  .goals-button { margin-top: 0; }
+}
+.button-quiet { border-color: var(--rule); color: var(--ink-soft); font-weight: 400; }
+
+/* 準備物 */
+.mat-toolbar { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.mat-modes { display: flex; border: 1.5px solid var(--ink); border-radius: 2px; }
+.mat-mode { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; cursor: pointer; font-weight: 700; }
+.mat-mode + .mat-mode { border-left: 1.5px solid var(--ink); }
+.mat-mode:has(input:checked) { background: var(--subject); color: #fff; }
+.mat-mode input { accent-color: #fff; }
+.mat-actions { display: flex; gap: 8px; }
+.mat-group { border-top: 1px solid var(--rule); padding: 10px 0 14px; }
+.mat-title { display: flex; gap: 12px; align-items: baseline; margin: 0 0 6px; font-size: 1rem; }
+.mat-n { font-family: var(--mincho); color: var(--subject); white-space: nowrap; }
+.mat-aim { font-weight: 400; font-size: .9rem; color: var(--ink-soft); }
+.checklist { list-style: none; margin: 0; padding: 0; columns: 2 14em; column-gap: 32px; }
+.checklist li { break-inside: avoid; display: flex; align-items: center; gap: 10px; min-height: 44px; border-bottom: 1px dotted var(--rule-soft); }
+.checklist input { width: 22px; height: 22px; accent-color: var(--subject); flex: none; }
+.checklist label { flex: 1; cursor: pointer; }
+.checklist li:has(input:checked) label { color: var(--ink-soft); text-decoration: line-through; }
+.mat-when { font-size: .8rem; color: var(--ink-soft); white-space: nowrap; }
+.mat-all { border-top: 1px solid var(--rule); }
+
+/* 印刷用の計画表（画面では出さない） */
+.print-plan { display: none; }
+
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  body { font-size: 10.5pt; line-height: 1.5; }
+  .site-header, .side, .back-link, .unit-actions, .mat-toolbar, .figure-hint, .sources { display: none !important; }
+  .layout { display: block !important; padding: 0; max-width: none; }
+  /* 単元ページ：計画表だけを印刷する */
+  .unit .unit-header, .unit .intro, .unit .plan { display: none !important; }
+  .print-plan { display: block; }
+  .pp-title { font-family: var(--mincho); font-size: 14pt; font-weight: 600; margin: 0 0 4mm; border-bottom: 1.5pt solid #000; padding-bottom: 2mm; }
+  .pp-goals { margin: 0 0 4mm; display: grid; grid-template-columns: 9em 1fr; gap: 1mm 3mm; font-size: 9pt; }
+  .pp-goals dt { font-weight: 700; }
+  .pp-goals dd { margin: 0; }
+  .pp-table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  .pp-table th, .pp-table td { border: .5pt solid #555; padding: 1.2mm 1.6mm; vertical-align: top; text-align: left; }
+  .pp-table th { background: #eee; font-weight: 700; }
+  .pp-table tr { break-inside: avoid; }
+  .pp-n { text-align: center !important; width: 2.2em; }
+  .pp-eval { width: 5em; }
+  /* 準備物：チェック欄つきの一覧 */
+  .materials-page .unit-header { border-bottom: 1.5pt solid #000; margin-bottom: 4mm; }
+  .checklist li { min-height: 0; padding: 1mm 0; }
+  .checklist li:has(input:checked) label { text-decoration: none; color: #000; }
+}
+.checklist li { flex-wrap: wrap; column-gap: 10px; row-gap: 0; }
+.checklist label { flex: 1 1 8em; }
+.mat-when { margin-left: auto; text-align: right; }

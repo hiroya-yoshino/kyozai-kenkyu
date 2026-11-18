@@ -2,6 +2,7 @@
 import { parseHash, buildHash } from './router.js';
 import { loadIndex, loadUnit, findItem } from './data.js';
 import { renderHome, renderUnitList, renderNotReady, renderUnit, renderLoadError } from './render.js';
+import { renderMaterials } from './materials.js';
 
 const main = document.getElementById('app');
 const side = document.getElementById('side');
@@ -28,7 +29,7 @@ async function route() {
   side.replaceChildren();
   if (r.view === 'home') renderHome(main, index);
   else if (r.view === 'list') renderUnitList(main, index, r.subject, r.grade);
-  else await showUnit(r, index, token);
+  else await showUnit(r, index, token); // 単元ページと準備物の画面
   if (token !== seq) return;
   document.title = `${main.querySelector('h1')?.textContent ?? ''}｜教材研究ノート`;
 }
@@ -40,10 +41,19 @@ async function showUnit(r, index, token) {
   const unit = (item?.status === 'ready' || fixtures) ? await loadUnit(r.subject, r.grade, r.unitId) : null;
   if (token !== seq) return;
   if (!unit) { renderNotReady(main, back); return; }
-  renderUnitList(side, index, r.subject, r.grade, r.unitId);
-  side.hidden = false;
+  if (r.view === 'unit') {
+    renderUnitList(side, index, r.subject, r.grade, r.unitId);
+    side.hidden = false;
+  }
   const subjectName = index.subjects.find((s) => s.id === r.subject)?.name ?? '';
-  renderUnit(main, unit, back, `${r.grade}年　${subjectName}`);
+  const kicker = `${r.grade}年　${subjectName}`;
+  if (r.view === 'materials') {
+    renderMaterials(main, unit, { kicker, unitHash: buildHash({ ...r, view: 'unit' }),
+      storeKey: `kyozai:junbi:${r.subject}/${r.grade}/${r.unitId}` });
+    window.scrollTo(0, 0);
+    return;
+  }
+  renderUnit(main, unit, back, kicker, buildHash({ ...r, view: 'materials' }));
   window.scrollTo(0, 0);
 }
 

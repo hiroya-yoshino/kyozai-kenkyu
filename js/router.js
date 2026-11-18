@@ -8,16 +8,20 @@ export function parseHash(hash) {
   const parts = String(hash ?? '').replace(/^#\/?/, '').split('/').filter(Boolean);
   const [subject, grade, unitId] = parts;
   if (parts.length === 0) return { view: 'home' };
-  if (parts.length > 3 || !ID.test(subject)) return { view: 'home' };
+  if (parts.length > 4 || !ID.test(subject)) return { view: 'home' };
   if (parts.length === 1) return { view: 'list', subject, grade: DEFAULT_GRADE };
   if (!GRADE.test(grade)) return { view: 'home' };
   if (parts.length === 2) return { view: 'list', subject, grade: Number(grade) };
   if (!UNIT.test(unitId)) return { view: 'home' };
+  if (parts.length === 4) {
+    return parts[3] === 'junbi' ? { view: 'materials', subject, grade: Number(grade), unitId } : { view: 'home' };
+  }
   return { view: 'unit', subject, grade: Number(grade), unitId };
 }
 
 export function buildHash(route) {
   if (route.view === 'list') return `#/${route.subject}/${route.grade}`;
   if (route.view === 'unit') return `#/${route.subject}/${route.grade}/${route.unitId}`;
+  if (route.view === 'materials') return `#/${route.subject}/${route.grade}/${route.unitId}/junbi`;
   return '#/';
 }
