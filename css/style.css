@@ -1,18 +1,35 @@
-/* 教材研究ノート — 白い実験ノートに、紺のインク、リトマスの青緑。赤は安全上の注意だけに使う。 */
+/* 教材研究ノート
+   指導計画表と板書の約束ごとを土台にする。
+   ・色は教科を表す（理科＝緑）。朱は「評価」と「安全上の注意」だけに使う。
+   ・区切りは罫線と余白。角丸の箱・影・絵文字は使わない。
+   ・めあて「め」とまとめ「ま」は板書のように囲み、教科書体で書く。 */
 :root {
-  --paper: #fbfcfa;
-  --ink: #1f2a44;
-  --ink-soft: #5b6573;
-  --grid: #dce6ee;
-  --line: #c9d4de;
-  --accent: #1e7f6e;
-  --accent-soft: #e3f1ee;
-  --safety: #c8372d;
-  --safety-soft: #fbecea;
-  --radius-s: 6px;
-  --radius-m: 10px;
-  --font: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", "Noto Sans JP", "Meiryo", system-ui, sans-serif;
+  --paper: #ffffff;
+  --ink: #222a33;
+  --ink-soft: #5d6773;
+  --rule: #b9c4cf;
+  --rule-soft: #e2e7ec;
+  --shu: #c8372d;
+  --shu-soft: #fbeeed;
+
+  /* 教科の色 */
+  --c-rika: #2f7d4f;
+  --c-rika-soft: #e8f3ec;
+  --c-sansu: #2f62a8;
+  --c-sansu-soft: #e8eff8;
+  --c-kokugo: #9b3d5a;
+  --c-kokugo-soft: #f6eaee;
+
+  --subject: var(--ink);
+  --subject-soft: #f1f3f5;
+
+  --mincho: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "BIZ UDPMincho", "Noto Serif JP", "Noto Serif CJK JP", serif;
+  --gothic: "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", "Noto Sans JP", "Noto Sans CJK JP", "Meiryo", sans-serif;
+  --kyokasho: "UD Digi Kyokasho NK-R", "UD Digi Kyokasho N-R", "UDデジタル教科書体 NK-R", "UDデジタル教科書体 N-R", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
 }
+body[data-subject="rika"] { --subject: var(--c-rika); --subject-soft: var(--c-rika-soft); }
+body[data-subject="sansu"] { --subject: var(--c-sansu); --subject-soft: var(--c-sansu-soft); }
+body[data-subject="kokugo"] { --subject: var(--c-kokugo); --subject-soft: var(--c-kokugo-soft); }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -20,201 +37,209 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font);
+  font-family: var(--gothic);
   font-size: 16px;
-  line-height: 1.75;
+  line-height: 1.8;
   overflow-wrap: anywhere;
 }
 a { color: inherit; }
-:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--subject); outline-offset: 2px; }
+.kyokasho { font-family: var(--kyokasho); }
 
-/* ヘッダー */
+/* ヘッダー：教科の色の太い下線 */
 .site-header {
   position: sticky; top: 0; z-index: 10;
-  background: var(--ink); color: #fff;
+  background: var(--paper);
+  border-bottom: 4px solid var(--subject);
   padding: 0 16px; height: 52px; display: flex; align-items: center;
 }
-.site-title { color: #fff; text-decoration: none; font-weight: 700; letter-spacing: .04em; }
+.site-title { font-family: var(--mincho); font-weight: 600; font-size: 1.1rem; letter-spacing: .12em; text-decoration: none; }
 
 /* レイアウト */
-.layout { max-width: 1180px; margin: 0 auto; padding: 20px 16px 64px; }
+.layout { max-width: 1180px; margin: 0 auto; padding: 24px 16px 72px; }
 .main:focus { outline: none; }
 .side[hidden] { display: none; }
 @media (max-width: 767.98px) { .side { display: none; } }
 @media (min-width: 768px) {
-  .layout:has(.side:not([hidden])) { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 32px; align-items: start; }
-  .side { position: sticky; top: 72px; max-height: calc(100vh - 92px); overflow-y: auto; padding-right: 8px; }
-  .side .page-title { font-size: 1.05rem; }
+  .layout:has(.side:not([hidden])) { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 40px; align-items: start; }
+  .side { position: sticky; top: 76px; max-height: calc(100vh - 96px); overflow-y: auto; padding-right: 12px; border-right: 1px solid var(--rule-soft); }
+  .side .page-title { font-size: 1rem; }
 }
 
-.page-title { font-size: 1.6rem; line-height: 1.4; margin: 0 0 16px; }
-.badge {
-  display: inline-block; font-size: .75rem; line-height: 1; padding: 5px 8px;
-  border-radius: 999px; background: #eef1f4; color: var(--ink-soft); white-space: nowrap;
-}
+.page-title { font-family: var(--mincho); font-weight: 600; font-size: 1.7rem; line-height: 1.4; margin: 0 0 16px; letter-spacing: .04em; }
 
-/* ホーム */
-.subject-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.subject-card { border: 2px solid var(--ink); border-radius: var(--radius-m); min-height: 120px; display: flex; }
-.subject-card a, .subject-card.is-preparing {
-  flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px;
-  padding: 18px; text-decoration: none;
+/* ホーム：教科書の背表紙 */
+.home-title { font-size: 1.2rem; color: var(--ink-soft); }
+.shelf { list-style: none; margin: 8px 0 0; padding: 0 0 0 4px; display: flex; gap: 14px; align-items: flex-end; border-bottom: 6px solid var(--ink); padding-bottom: 0; }
+.subject-card { width: 96px; height: 300px; display: flex; }
+.subject-rika { --subject: var(--c-rika); }
+.subject-sansu { --subject: var(--c-sansu); }
+.subject-kokugo { --subject: var(--c-kokugo); }
+.subject-card > a, .subject-card.is-preparing {
+  flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: 26px 0 14px; text-decoration: none;
 }
-.subject-card a { background: linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 100% 16px, linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 16px 100%; border-radius: inherit; }
-.subject-card a:hover { background-color: var(--accent-soft); }
-.subject-name { font-size: 1.8rem; font-weight: 700; }
-.subject-rika { border-color: var(--accent); }
-.subject-rika .subject-name { color: var(--accent); }
-.subject-card.is-preparing { border-style: dashed; border-color: var(--line); color: var(--ink-soft); align-items: flex-start; }
+.subject-card > a { background: var(--subject); color: #fff; }
+.subject-card > a:hover { filter: brightness(1.08); }
+.subject-card > a::before, .subject-card > a::after {
+  content: ""; position: absolute; left: 10px; right: 10px; height: 0; border-top: 2px solid rgba(255,255,255,.55);
+}
+.subject-card > a::before { top: 12px; }
+.subject-card > a::after { bottom: 46px; }
+.subject-name { writing-mode: vertical-rl; font-family: var(--mincho); font-weight: 600; font-size: 2rem; letter-spacing: .35em; }
+.subject-sub { font-size: .8rem; letter-spacing: .05em; }
+.subject-card.is-preparing { border: 2px dashed var(--rule); border-bottom: 0; color: var(--ink-soft); height: 260px; align-self: flex-end; }
+.subject-card.is-preparing .subject-name { color: var(--subject); opacity: .55; }
 
 /* 学年タブ */
-.grade-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+.grade-tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid var(--ink); }
 .grade-tab {
-  min-height: 44px; min-width: 72px; display: inline-flex; align-items: center; justify-content: center;
-  border: 2px solid var(--ink); border-radius: var(--radius-s); text-decoration: none; font-weight: 700;
+  min-height: 44px; min-width: 76px; display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none; font-weight: 700; color: var(--ink-soft); border-bottom: 4px solid transparent; margin-bottom: -2px;
 }
-.grade-tab[aria-selected="true"] { background: var(--ink); color: #fff; }
+.grade-tab[aria-selected="true"] { color: var(--subject); border-bottom-color: var(--subject); }
 
-/* 単元一覧 */
-.term { margin-bottom: 24px; }
-.term-title { font-size: 1rem; color: var(--ink-soft); margin: 0 0 6px; padding-bottom: 4px; border-bottom: 2px solid var(--ink); }
-.unit-list { list-style: none; margin: 0; padding: 0; }
+/* 単元一覧（年間指導計画の表） */
+.term { margin-bottom: 28px; }
+.term-title { font-family: var(--mincho); font-size: 1rem; font-weight: 600; margin: 0 0 4px; padding-left: 10px; border-left: 4px solid var(--subject); }
+.unit-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
 .unit-row a, .event-row {
-  display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; align-items: center; gap: 10px;
-  min-height: 52px; padding: 8px 6px; border-bottom: 1px solid var(--line); text-decoration: none;
+  display: grid; grid-template-columns: 2.4em minmax(0, 1fr) auto; align-items: baseline; gap: 10px;
+  min-height: 52px; padding: 12px 4px; border-bottom: 1px solid var(--rule); text-decoration: none;
 }
-.event-row { color: var(--ink-soft); font-size: .92rem; min-height: 40px; }
-.event-row .unit-title { grid-column: 2; }
-.unit-row a:hover { background: var(--accent-soft); }
-.unit-row a[aria-current="page"] { background: var(--accent-soft); box-shadow: inset 4px 0 0 var(--accent); }
-.unit-no {
-  width: 2em; height: 2em; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent);
-  display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: .9rem;
-}
-.unit-row.is-preparing .unit-no { border-color: var(--line); color: var(--ink-soft); }
-.unit-title { font-weight: 600; }
-.meta { display: flex; gap: 8px; align-items: center; color: var(--ink-soft); font-size: .85rem; white-space: nowrap; }
+.event-row { color: var(--ink-soft); font-size: .9rem; min-height: 40px; padding: 8px 4px; }
+.event-row .unit-title { grid-column: 2; font-weight: 400; }
+.unit-row a:hover { background: var(--subject-soft); }
+.unit-row a[aria-current="page"] { background: var(--subject-soft); box-shadow: inset 4px 0 0 var(--subject); }
+.unit-no { font-family: var(--mincho); font-weight: 600; font-size: 1.2rem; color: var(--subject); text-align: right; }
+.unit-row.is-preparing .unit-no { color: var(--ink-soft); }
+.unit-title { font-weight: 700; }
+.meta { display: flex; gap: 12px; align-items: baseline; color: var(--ink-soft); font-size: .85rem; white-space: nowrap; }
 .side .meta .month, .side .badge { display: none; }
+.badge { font-size: .75rem; color: var(--ink-soft); border: 1px solid var(--rule); padding: 0 6px; }
 
-/* 準備中・お知らせ */
-.notice, .not-ready { padding: 24px; border: 2px dashed var(--line); border-radius: var(--radius-m); color: var(--ink-soft); }
-.not-ready p { margin: 0 0 16px; font-weight: 600; color: var(--ink); }
+/* 準備中・エラー */
+.notice, .not-ready { padding: 20px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); color: var(--ink-soft); }
+.not-ready p { margin: 0 0 16px; font-weight: 700; color: var(--ink); }
 .button {
-  min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 8px 18px; border: 2px solid var(--ink); border-radius: var(--radius-s);
-  background: #fff; color: var(--ink); font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+  min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  padding: 6px 18px; border: 1.5px solid var(--ink); border-radius: 2px;
+  background: var(--paper); color: var(--ink); font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
 }
-.button:hover { background: var(--accent-soft); }
+.button:hover { background: var(--subject-soft); }
 
 /* 単元ページ */
-.back-link { display: inline-block; margin-bottom: 8px; color: var(--ink-soft); text-decoration: none; min-height: 44px; line-height: 44px; }
+.back-link { display: inline-block; min-height: 44px; line-height: 44px; color: var(--ink-soft); font-size: .9rem; }
 @media (min-width: 768px) { .back-link { display: none; } }
 .unit-header {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: end;
-  padding: 20px; margin-bottom: 16px; border: 2px solid var(--ink); border-radius: var(--radius-m);
-  background:
-    linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 100% 18px,
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 18px 100%, #fff;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; align-items: end;
+  padding-bottom: 16px; margin-bottom: 28px; border-bottom: 2px solid var(--ink);
 }
-.unit-header .page-title { margin: 0; font-size: 1.75rem; }
-.unit-meta { grid-column: 1; margin: 0; display: flex; gap: 12px; color: var(--ink-soft); font-weight: 600; }
-.goals-button { grid-column: 2; grid-row: 1 / span 2; border-color: var(--accent); color: var(--accent); }
+.unit-kicker { grid-column: 1; margin: 0; color: var(--subject); font-weight: 700; font-size: .9rem; letter-spacing: .1em; }
+.unit-header .page-title { grid-column: 1; margin: 0; font-size: 2rem; }
+.unit-meta { grid-column: 1; margin: 0; display: flex; gap: 16px; color: var(--ink-soft); }
+.goals-button { grid-column: 2; grid-row: 2 / span 2; }
 @media (max-width: 479.98px) {
   .unit-header { grid-template-columns: minmax(0, 1fr); }
-  .goals-button { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 8px; }
+  .goals-button { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 12px; }
 }
 
-.toc { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
-.toc a {
-  min-height: 36px; padding: 4px 12px; display: inline-flex; align-items: center;
-  border: 1px solid var(--line); border-radius: 999px; text-decoration: none; font-size: .9rem; background: #fff;
-}
-.toc a:hover { border-color: var(--accent); color: var(--accent); }
+.section-title { font-family: var(--mincho); font-weight: 600; font-size: 1.2rem; margin: 0 0 12px; padding-left: 10px; border-left: 4px solid var(--subject); }
+.intro { margin-bottom: 40px; }
+.intro dl { margin: 0; }
+.intro dt { font-size: .82rem; font-weight: 700; color: var(--ink-soft); }
+.intro dd { margin: 0 0 14px; max-width: 42em; }
+.intro dd.kyokasho { font-size: 1.12rem; }
 
-.intro, .lessons { margin-bottom: 32px; scroll-margin-top: 64px; }
-.intro h2, .lessons h2 { font-size: 1.2rem; margin: 0 0 10px; }
-.intro dl { margin: 0; padding: 16px 18px; background: #fff; border-left: 4px solid var(--accent); border-radius: 0 var(--radius-s) var(--radius-s) 0; }
-.intro dt { font-size: .85rem; color: var(--ink-soft); font-weight: 700; }
-.intro dd { margin: 0 0 10px; }
-.intro dd:last-child { margin-bottom: 0; }
-
-.lesson { border: 1px solid var(--line); border-radius: var(--radius-m); background: #fff; margin-bottom: 10px; scroll-margin-top: 64px; }
-.lesson summary {
-  min-height: 56px; padding: 10px 14px; cursor: pointer; list-style: none;
-  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center;
+/* 指導計画表 */
+.plan { margin-bottom: 40px; }
+.plan-head, .lesson summary {
+  display: grid; grid-template-columns: 3.2em minmax(0, 1fr) 5.5em; gap: 12px; align-items: baseline;
 }
+.plan-head { padding: 6px 8px; background: var(--subject-soft); border-top: 2px solid var(--ink); border-bottom: 1px solid var(--ink); font-size: .8rem; font-weight: 700; color: var(--ink-soft); }
+.plan-head .col-n, .lesson summary .col-n { text-align: center; }
+.lesson { border-bottom: 1px solid var(--rule); scroll-margin-top: 64px; }
+.lesson summary { min-height: 56px; padding: 12px 8px; cursor: pointer; list-style: none; }
 .lesson summary::-webkit-details-marker { display: none; }
-.lesson summary::after { content: "＋"; grid-column: 4; color: var(--ink-soft); font-weight: 700; }
-.lesson[open] summary::after { content: "－"; }
-.lesson[open] summary { border-bottom: 1px solid var(--line); }
-.lesson-no {
-  background: var(--ink); color: #fff; font-weight: 700; font-size: .85rem;
-  padding: 4px 10px; border-radius: var(--radius-s); white-space: nowrap;
-}
-.lesson-aim { font-weight: 600; }
-.badge-ex { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
-.lesson-body { margin: 0; padding: 14px 18px 4px; display: grid; grid-template-columns: 4.5em minmax(0, 1fr); gap: 8px 12px; }
-.lesson-body dt { font-weight: 700; color: var(--accent); }
-.lesson-body dd { margin: 0; }
-.lesson-body ul { margin: 0; padding-left: 1.2em; }
+.lesson summary:hover { background: var(--subject-soft); }
+.lesson[open] > summary { background: var(--subject-soft); }
+.col-n { font-family: var(--mincho); font-weight: 600; font-size: 1.35rem; color: var(--subject); line-height: 1.2; }
+.col-main { display: flex; flex-direction: column; gap: 2px; }
+.lesson-stage { font-size: .78rem; color: var(--ink-soft); }
+.col-aim { font-weight: 700; }
+.col-tag { font-size: .75rem; color: var(--subject); font-weight: 700; }
+.col-eval { font-size: .85rem; color: var(--shu); font-weight: 700; text-align: right; }
 @media (max-width: 479.98px) {
-  .lesson-body { grid-template-columns: minmax(0, 1fr); gap: 2px; }
-  .lesson-body dd { margin-bottom: 10px; }
+  .plan-head, .lesson summary { grid-template-columns: 2.2em minmax(0, 1fr) 4em; gap: 8px; }
 }
 
-.experiment { margin: 8px 14px 14px; padding: 14px 16px; border: 2px solid var(--accent); border-radius: var(--radius-m); }
-.experiment h3 { margin: 0 0 8px; font-size: 1.05rem; color: var(--accent); }
-.experiment h4 { margin: 14px 0 4px; font-size: .95rem; }
+.lesson-body { padding: 8px 8px 24px calc(3.2em + 20px); }
+@media (max-width: 479.98px) { .lesson-body { padding-left: 8px; } }
+.aim-box, .summary-box { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0; font-size: 1.1rem; line-height: 1.75; max-width: 40em; }
+.summary-box { border: 2px solid var(--ink); padding: 12px 14px; }
+.mark {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 1.7em; height: 1.7em; border: 2px solid var(--ink); font-family: var(--kyokasho); font-weight: 700; font-size: .95rem; line-height: 1;
+}
+.aim-box .mark { border-color: var(--subject); color: var(--subject); }
+.body-label { margin: 18px 0 4px; font-size: .85rem; color: var(--ink-soft); }
+.activities { margin: 0; padding-left: 1.3em; max-width: 42em; }
+.lesson-actions { margin: 16px 0 4px; }
+.eval-button { border-color: var(--shu); color: var(--shu); }
+.eval-button:hover { background: var(--shu-soft); }
+
+/* 実験 */
+.experiment { margin-top: 24px; padding-top: 12px; border-top: 2px solid var(--subject); max-width: 44em; }
+.experiment h3 { margin: 0 0 8px; font-family: var(--mincho); font-weight: 600; font-size: 1.1rem; color: var(--subject); }
+.experiment h4 { margin: 16px 0 4px; font-size: .9rem; }
 .experiment ul, .experiment ol { margin: 0; padding-left: 1.4em; }
 .materials { columns: 2 11em; column-gap: 24px; }
 .materials li { break-inside: avoid; }
-.safety-title { color: var(--safety); }
-.safety-title::before { content: "⚠ "; }
-.safety { background: var(--safety-soft); border-left: 4px solid var(--safety); border-radius: 0 var(--radius-s) var(--radius-s) 0; padding: 8px 12px 8px 2em !important; }
-.figure { margin: 0 0 6px; text-align: center; }
-.figure img { max-width: 100%; height: auto; max-height: 360px; background: #fff; }
-.figure-open { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
-.figure figcaption { font-size: .85rem; color: var(--ink-soft); }
-.figure-hint { margin: 0; font-size: .78rem; color: var(--ink-soft); }
+.safety-title { color: var(--shu); }
+.safety { border-left: 3px solid var(--shu); padding: 4px 0 4px 2em !important; background: var(--shu-soft); }
+
+/* 図 */
+.figure { margin: 8px 0 12px; }
+.figure-open { display: block; width: 100%; padding: 0; border: 1px solid var(--rule-soft); background: #fff; cursor: zoom-in; }
+.figure img { display: block; max-width: 100%; height: auto; max-height: 380px; margin: 0 auto; }
+.figure figcaption { font-size: .82rem; color: var(--ink-soft); margin-top: 4px; }
+.figure-hint { margin: 0; font-size: .75rem; color: var(--ink-soft); }
 @media (min-width: 768px) { .figure-hint { display: none; } }
+.lesson-figure { margin: 16px 0; max-width: 44em; }
 
-/* 目標ポップアップ */
-.goals-dialog { padding: 0; border: none; border-radius: var(--radius-m); width: min(560px, calc(100vw - 32px)); color: var(--ink); }
-.goals-dialog::backdrop { background: rgba(31, 42, 68, .55); }
-.dialog-inner { padding: 20px 22px 24px; }
-.dialog-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; }
-.dialog-head h2 { margin: 0; font-size: 1.2rem; }
-.dialog-close {
-  width: 44px; height: 44px; border: 2px solid var(--ink); border-radius: 50%; background: #fff;
-  font-size: 1.4rem; line-height: 1; cursor: pointer; color: var(--ink);
-}
+/* 参考資料 */
+.sources { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: .85rem; color: var(--ink-soft); }
+.sources h2 { font-size: .95rem; margin: 0 0 6px; color: var(--ink); }
+.sources ul { margin: 0; padding-left: 1.2em; }
+.sources a { color: var(--subject); }
+
+/* ポップアップ（目標・評価・図） */
+.goals-dialog, .figure-dialog { padding: 0; border: 2px solid var(--ink); border-radius: 2px; color: var(--ink); }
+.goals-dialog { width: min(600px, calc(100vw - 32px)); }
+.goals-dialog::backdrop, .figure-dialog::backdrop { background: rgba(34, 42, 51, .55); }
+.dialog-inner { padding: 18px 22px 24px; }
+.dialog-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid var(--rule); }
+.dialog-head h2 { margin: 0; font-family: var(--mincho); font-weight: 600; font-size: 1.2rem; }
+.dialog-close { width: 44px; height: 44px; border: 1.5px solid var(--ink); border-radius: 2px; background: #fff; font-size: 1.4rem; line-height: 1; cursor: pointer; color: var(--ink); }
 .goals-list { margin: 0; }
-.goals-list dt { margin-top: 14px; font-weight: 700; color: var(--accent); }
+.goals-list dt { margin-top: 14px; font-weight: 700; color: var(--subject); }
 .goals-list dd { margin: 4px 0 0; }
-
-@media (prefers-reduced-motion: no-preference) {
-  .lesson[open] .lesson-body { animation: open .18s ease-out; }
-  @keyframes open { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-}
-@media print {
-  .site-header, .side, .toc, .goals-button, .back-link { display: none !important; }
-  .layout { display: block !important; }
-}
-
-/* 図のポップアップ */
-.figure-dialog { padding: 0; border: none; border-radius: var(--radius-m); width: min(1100px, calc(100vw - 16px)); max-height: calc(100vh - 16px); color: var(--ink); }
-.figure-dialog::backdrop { background: rgba(31, 42, 68, .7); }
+#evaluation .dialog-head h2 { color: var(--shu); }
+.evaluation-text { margin: 8px 0 0; white-space: pre-line; }
+.figure-dialog { width: min(1100px, calc(100vw - 16px)); max-height: calc(100vh - 16px); }
 .figure-dialog .dialog-inner { padding: 12px 12px 16px; }
 .figure-dialog-caption { margin: 0; font-weight: 700; }
 .figure-dialog-img { display: block; width: 100%; height: auto; max-height: calc(100vh - 110px); object-fit: contain; background: #fff; }
 .figure-dialog-hint { display: none; margin: 8px 0 0; font-size: .82rem; color: var(--ink-soft); text-align: center; }
 @media (max-width: 767.98px) and (orientation: portrait) { .figure-dialog-hint { display: block; } }
-.sources { margin-top: 32px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .9rem; color: var(--ink-soft); }
-.sources h2 { font-size: 1rem; margin: 0 0 6px; color: var(--ink); }
-.sources ul { margin: 0; padding-left: 1.2em; }
-.sources a { color: var(--accent); }
-.lesson-stage { margin: 12px 18px 0; font-size: .85rem; font-weight: 700; color: var(--ink-soft); }
-.lesson-figure { margin: 4px 14px 14px; }
-.lesson-actions { margin: 0 18px 12px; }
-.eval-button { border-color: var(--accent); color: var(--accent); min-width: 88px; }
-.evaluation-text { margin: 8px 0 0; white-space: pre-line; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .lesson[open] .lesson-body { animation: open .16s ease-out; }
+  @keyframes open { from { opacity: 0; } to { opacity: 1; } }
+}
+@media print {
+  .site-header, .side, .goals-button, .back-link, .lesson-actions, .figure-hint { display: none !important; }
+  .layout { display: block !important; }
+  .lesson { break-inside: avoid; }
+}
+.plan-head .col-n { font-family: var(--gothic); font-size: .8rem; font-weight: 700; color: var(--ink-soft); }

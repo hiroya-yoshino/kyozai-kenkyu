@@ -22,6 +22,8 @@ async function route() {
   const known = r.view === 'home' || index.subjects.some((s) => s.id === r.subject && s.status === 'ready');
   if (!known) { location.replace(buildHash({ view: 'home' })); return; }
 
+  if (r.view === 'home') delete document.body.dataset.subject;
+  else document.body.dataset.subject = r.subject;
   side.hidden = true;
   side.replaceChildren();
   if (r.view === 'home') renderHome(main, index);
@@ -40,7 +42,8 @@ async function showUnit(r, index, token) {
   if (!unit) { renderNotReady(main, back); return; }
   renderUnitList(side, index, r.subject, r.grade, r.unitId);
   side.hidden = false;
-  renderUnit(main, unit, back);
+  const subjectName = index.subjects.find((s) => s.id === r.subject)?.name ?? '';
+  renderUnit(main, unit, back, `${r.grade}年　${subjectName}`);
   window.scrollTo(0, 0);
 }
 

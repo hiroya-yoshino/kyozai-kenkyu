@@ -23,7 +23,11 @@ test('毎時間は閉じて並び、押すとめあて・活動・まとめが�
   await expect(page.locator('details.lesson')).toHaveCount(2);
   await expect(l1).not.toHaveAttribute('open', '');
   await l1.locator('summary').click();
-  for (const t of ['めあて', '第1時のめあて', '活動A', '活動B', 'まとめ', '第1時のまとめ']) await expect(l1).toContainText(t);
+  await expect(l1.locator('.aim-box .mark')).toHaveText('め');
+  await expect(l1.locator('.aim-box')).toContainText('第1時のめあて');
+  for (const t of ['活動A', '活動B']) await expect(l1.locator('.activities')).toContainText(t);
+  await expect(l1.locator('.summary-box .mark')).toHaveText('ま');
+  await expect(l1.locator('.summary-box')).toContainText('第1時のまとめ');
 });
 
 test('実験は第2時だけにあり、準備物・手順・安全・図がそろう', async ({ page }) => {
@@ -46,16 +50,20 @@ test('図が読めないときは説明文だけを出す', async ({ page }) => 
   await expect(l2.locator('figure figcaption')).toHaveText('テスト図の説明');
 });
 
-test('目次の第2時を押すと第2時が開く', async ({ page }) => {
+test('指導計画表の各行に、時・次・めあて・評価の記号が並ぶ', async ({ page }) => {
   await page.goto(URL99);
-  await page.locator('nav.toc').getByRole('link', { name: '第2時' }).click();
-  await expect(page.locator('details.lesson[data-n="2"]')).toHaveAttribute('open', '');
-  await expect(page.locator('details.lesson[data-n="2"]')).toBeInViewport();
+  const row = page.locator('details.lesson[data-n="1"] summary');
+  await expect(row.locator('.col-n')).toHaveText('1');
+  await expect(row.locator('.lesson-stage')).toHaveText('第1次　テストの次');
+  await expect(row.locator('.col-aim')).toHaveText('第1時のめあて');
+  await expect(row.locator('.col-eval')).toHaveText('思①');
+  await expect(page.locator('.plan-head')).toContainText('時');
+  await expect(page.locator('.plan-head')).toContainText('めあて');
 });
 
-test('目標ボタンがある', async ({ page }) => {
+test('「単元の目標」ボタンがある（絵文字を使わない）', async ({ page }) => {
   await page.goto(URL99);
-  await expect(page.locator('button#open-goals')).toBeVisible();
+  await expect(page.locator('button#open-goals')).toHaveText('単元の目標');
 });
 
 test('図を押すとページはそのままでポップアップに大きく表示され、×で戻る', async ({ page }) => {

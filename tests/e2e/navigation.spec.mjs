@@ -44,3 +44,24 @@ test('壊れたURLはホーム', async ({ page }) => {
   await page.goto('./#/xyz');
   await expect(page.getByRole('link', { name: /理科/ })).toBeVisible();
 });
+
+test('理科のページは理科の色（緑系統）になり、ホームは教科の色をもたない', async ({ page }) => {
+  const green = async () => page.evaluate(() => {
+    const c = getComputedStyle(document.body).getPropertyValue('--subject').trim();
+    const m = c.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+    if (!m) return null;
+    const [r, g, b] = m.slice(1).map((h) => parseInt(h, 16));
+    return g > r && g > b;
+  });
+  await page.goto('./#/rika/6');
+  await expect(page.locator('body')).toHaveAttribute('data-subject', 'rika');
+  expect(await green()).toBe(true);
+  await page.goto('./#/');
+  await expect(page.locator('body')).not.toHaveAttribute('data-subject', 'rika');
+});
+
+test('ホームの教科には、それぞれの教科の色がつく', async ({ page }) => {
+  await page.goto('./');
+  const colors = await page.locator('.subject-card').evaluateAll((els) => els.map((e) => getComputedStyle(e).getPropertyValue('--subject').trim()));
+  expect(new Set(colors).size).toBe(3);
+});
