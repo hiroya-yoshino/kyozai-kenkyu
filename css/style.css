@@ -302,3 +302,7 @@ a { color: inherit; }
 .checklist li { flex-wrap: wrap; column-gap: 10px; row-gap: 0; }
 .checklist label { flex: 1 1 8em; }
 .mat-when { margin-left: auto; text-align: right; }
+/* 準備物の画面の「もどる」はどの画面幅でも出す */
+.back-button { margin-bottom: 16px; }
+.back-button::before { content: "‹"; margin-right: 8px; font-size: 1.3em; line-height: 1; }
+@media print { .back-button { display: none !important; } }

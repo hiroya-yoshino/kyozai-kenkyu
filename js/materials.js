@@ -51,7 +51,7 @@ export function renderMaterials(el, unit, { kicker, unitHash, storeKey }) {
 
   draw();
   el.replaceChildren(h('article', { class: 'materials-page' },
-    h('a', { class: 'back-link', href: unitHash }, '単元のページにもどる'),
+    h('a', { class: 'button back-button', href: unitHash }, '単元のページにもどる'),
     h('header', { class: 'unit-header mat-header' },
       h('p', { class: 'unit-kicker' }, `${kicker}　${unit.title}`),
       h('h1', { class: 'page-title' }, '準備物'),

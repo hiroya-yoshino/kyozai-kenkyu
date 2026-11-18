@@ -57,3 +57,17 @@ test('「計画表を印刷」で印刷が始まり、印刷では計画表（�
   await expect(page.locator('section.plan')).toBeHidden();
   await expect(page.locator('section.intro')).toBeHidden();
 });
+
+for (const [label, width] of [['スマホ', 375], ['iPad', 1024], ['PC', 1280]]) {
+  test(`${label}幅でも準備物の画面に戻るボタンがあり、押すと単元のページに戻る`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto(MAT);
+    const back = page.getByRole('link', { name: '単元のページにもどる' });
+    await expect(back).toBeVisible();
+    const box = await back.boundingBox();
+    expect(box.height).toBeGreaterThanOrEqual(44);
+    await back.click();
+    await expect(page).toHaveURL(/#\/rika\/6\/96$/);
+    await expect(page.locator('details.lesson').first()).toBeVisible();
+  });
+}
