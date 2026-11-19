@@ -340,3 +340,20 @@ a { color: inherit; }
   .col-eval { font-size: .74rem; }
 }
 .next-lesson { border-top: 0; padding-top: 0; }
+
+/* 検索と書き出し */
+.list-tools { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: 0 0 24px; }
+.search-label { font-size: .85rem; font-weight: 700; color: var(--ink-soft); }
+.search-input {
+  flex: 1 1 14em; min-height: 44px; padding: 6px 12px; font: inherit;
+  border: 1.5px solid var(--ink); border-radius: 2px; background: #fff;
+}
+.search-input:focus { outline: 3px solid var(--subject); outline-offset: 1px; }
+.search-results ul { list-style: none; margin: 0 0 24px; padding: 0; border-top: 1px solid var(--rule); }
+.search-results a { display: grid; gap: 2px; padding: 10px 4px; border-bottom: 1px solid var(--rule); text-decoration: none; }
+.search-results a:hover { background: var(--subject-soft); }
+.sr-where { font-weight: 700; }
+.sr-fields { font-size: .78rem; color: var(--subject); font-weight: 700; }
+.sr-snippet { font-size: .88rem; color: var(--ink-soft); }
+.search-empty { color: var(--ink-soft); padding: 12px 0; border-top: 1px solid var(--rule); }
+@media print { .list-tools, .search-results { display: none !important; } }

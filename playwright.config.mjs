@@ -8,7 +8,9 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:4173/kyozai-kenkyu/',
     serviceWorkers: 'block',
-    launchOptions: chrome ? { executablePath: chrome } : {},
+    // 日本語のファイル名を正しく扱えるよう、ブラウザを UTF-8 の言語設定で起動する
+    launchOptions: { ...(chrome ? { executablePath: chrome } : {}), env: { ...process.env, LANG: 'ja_JP.UTF-8', LC_ALL: 'C.UTF-8' } },
+    locale: 'ja-JP',
   },
   webServer: { command: 'node tools/serve.mjs', url: 'http://localhost:4173/kyozai-kenkyu/package.json', reuseExistingServer: true },
 });

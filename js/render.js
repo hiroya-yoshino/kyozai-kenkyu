@@ -1,6 +1,8 @@
 // データから画面を組み立てる。
 import { buildHash } from './router.js';
-import { findGrade } from './data.js';
+import { findGrade, loadUnit } from './data.js';
+import { searchUnits } from './search.js';
+import { evaluationRows, downloadCSV } from './export.js';
 import { openGoals, openFigure, openEvaluation } from './modal.js';
 import { getDone, setDone, unitKey, nextLesson } from './progress.js';
 
@@ -55,7 +57,51 @@ export function renderUnitList(el, index, subject, grade, currentUnitId = null) 
         h('h2', { class: 'term-title' }, TERMS[term]),
         h('ol', { class: 'unit-list' }, items.map((i) => unitRow(i, subject, grade, currentUnitId))));
     }).filter(Boolean);
-  el.replaceChildren(h(titleTag, { class: 'page-title' }, `${s?.name ?? ''}　単元一覧`), tabs, ...body);
+  const tools = !currentUnitId && g?.status === 'ready' ? listTools(index, s, g, body) : [];
+  el.replaceChildren(h(titleTag, { class: 'page-title' }, `${s?.name ?? ''}　単元一覧`), tabs, ...tools, ...body);
+}
+
+// 公開している単元の中身をまとめて読む（検索と書き出しで使う）
+async function loadReadyUnits(subjectId, g) {
+  const items = g.items.filter((i) => i.kind === 'unit' && i.status === 'ready');
+  const units = await Promise.all(items.map((i) => loadUnit(subjectId, g.grade, i.id)));
+  return units.map((u, k) => u && { ...u, no: items[k].no }).filter(Boolean);
+}
+
+function listTools(index, subject, g, listBody) {
+  let units = null;
+  const results = h('div', { class: 'search-results', 'aria-live': 'polite' });
+  let timer;
+  const run = async (q) => {
+    if (!q.trim()) {
+      results.replaceChildren();
+      listBody.forEach((n) => { n.hidden = false; });
+      return;
+    }
+    units ??= await loadReadyUnits(subject.id, g);
+    const found = searchUnits(units, q);
+    listBody.forEach((n) => { n.hidden = true; n.remove(); });
+    results.replaceChildren(found.length
+      ? h('ul', {}, found.map((r) => h('li', {},
+        h('a', { href: buildHash({ view: 'unit', subject: subject.id, grade: g.grade, unitId: r.unitId, lesson: r.n }) },
+          h('span', { class: 'sr-where' }, `単元${r.no}　${r.title}　第${r.n}時`),
+          h('span', { class: 'sr-fields' }, r.fields.join('・')),
+          h('span', { class: 'sr-snippet' }, r.snippet)))))
+      : h('p', { class: 'search-empty' }, `「${q.trim()}」は見つかりませんでした。ほかの言葉でためしてください。`));
+  };
+  const input = h('input', { type: 'search', id: 'unit-search', class: 'search-input', placeholder: '例：石灰水、気体検知管',
+    'aria-label': '単元の中を検索', oninput: (e) => {
+      clearTimeout(timer);
+      const q = e.target.value;
+      timer = setTimeout(() => {
+        run(q).then(() => { if (!q.trim()) results.after(...listBody); });
+      }, 150);
+    } });
+  const exportAll = h('button', { type: 'button', class: 'button button-quiet', onclick: async () => {
+    units ??= await loadReadyUnits(subject.id, g);
+    downloadCSV(`${g.grade}年${subject.name}_評価規準.csv`, units.flatMap(evaluationRows));
+  } }, '評価規準をまとめて書き出す');
+  return [h('div', { class: 'list-tools' }, h('label', { class: 'search-label', for: 'unit-search' }, '検索'), input, exportAll), results];
 }
 
 function unitRow(item, subject, grade, currentUnitId) {
@@ -95,7 +141,11 @@ export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null
       h('div', { class: 'unit-actions' },
         h('button', { id: 'open-goals', type: 'button', class: 'button goals-button', onclick: () => openGoals(unit.goals) }, '単元の目標'),
         materialsHash ? h('a', { class: 'button', href: materialsHash }, '準備物') : null,
-        h('button', { type: 'button', class: 'button', onclick: () => window.print() }, '計画表を印刷'))),
+        h('button', { type: 'button', class: 'button', onclick: () => window.print() }, '計画表を印刷'),
+        h('button', { type: 'button', class: 'button button-quiet', onclick: () => {
+          const [grade, subjectName] = kicker.split('　');
+          downloadCSV(`${grade}${subjectName}_単元${unit.no ?? Number(unit.id)}_${unit.title}_評価規準.csv`, evaluationRows({ ...unit, no: unit.no ?? Number(unit.id) }));
+        } }, '評価規準を書き出す'))),
     renderPrintPlan(unit, kicker),
     intro,
     h('section', { class: 'lessons plan' },
