@@ -4,6 +4,7 @@ import { loadIndex, loadUnit, findItem } from './data.js';
 import { renderHome, renderUnitList, renderNotReady, renderUnit, renderLoadError } from './render.js';
 import { renderMaterials } from './materials.js';
 import { unitKey } from './progress.js';
+import { renderSettings, renderDraftForm, renderDraftView } from './draftview.js';
 
 const main = document.getElementById('app');
 const side = document.getElementById('side');
@@ -21,14 +22,18 @@ async function route() {
     return;
   }
   if (token !== seq) return;
-  const known = r.view === 'home' || index.subjects.some((s) => s.id === r.subject && s.status === 'ready');
+  const known = r.view === 'home' || r.view === 'settings' || index.subjects.some((s) => s.id === r.subject && s.status === 'ready');
   if (!known) { location.replace(buildHash({ view: 'home' })); return; }
 
-  if (r.view === 'home') delete document.body.dataset.subject;
+  if (r.view === 'home' || r.view === 'settings') delete document.body.dataset.subject;
   else document.body.dataset.subject = r.subject;
   side.hidden = true;
   side.replaceChildren();
+  const subjectName = index.subjects.find((s) => s.id === r.subject)?.name ?? '';
   if (r.view === 'home') renderHome(main, index);
+  else if (r.view === 'settings') renderSettings(main);
+  else if (r.view === 'draftNew') renderDraftForm(main, { subject: r.subject, subjectName, grade: r.grade });
+  else if (r.view === 'draft') renderDraftView(main, { subject: r.subject, subjectName, grade: r.grade, draftId: r.draftId });
   else if (r.view === 'list') renderUnitList(main, index, r.subject, r.grade);
   else await showUnit(r, index, token); // 単元ページと準備物の画面
   if (token !== seq) return;

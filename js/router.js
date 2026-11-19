@@ -8,10 +8,13 @@ export function parseHash(hash) {
   const parts = String(hash ?? '').replace(/^#\/?/, '').split('/').filter(Boolean);
   const [subject, grade, unitId] = parts;
   if (parts.length === 0) return { view: 'home' };
+  if (parts.length === 1 && subject === 'settings') return { view: 'settings' };
   if (parts.length > 4 || !ID.test(subject)) return { view: 'home' };
   if (parts.length === 1) return { view: 'list', subject, grade: DEFAULT_GRADE };
   if (!GRADE.test(grade)) return { view: 'home' };
   if (parts.length === 2) return { view: 'list', subject, grade: Number(grade) };
+  if (parts.length === 3 && unitId === 'new') return { view: 'draftNew', subject, grade: Number(grade) };
+  if (parts.length === 3 && /^d-[a-z0-9]+$/.test(unitId)) return { view: 'draft', subject, grade: Number(grade), draftId: unitId };
   if (!UNIT.test(unitId)) return { view: 'home' };
   if (parts.length === 4) {
     if (parts[3] === 'junbi') return { view: 'materials', subject, grade: Number(grade), unitId };
@@ -22,6 +25,9 @@ export function parseHash(hash) {
 }
 
 export function buildHash(route) {
+  if (route.view === 'settings') return '#/settings';
+  if (route.view === 'draftNew') return `#/${route.subject}/${route.grade}/new`;
+  if (route.view === 'draft') return `#/${route.subject}/${route.grade}/${route.draftId}`;
   if (route.view === 'list') return `#/${route.subject}/${route.grade}`;
   if (route.view === 'unit') return `#/${route.subject}/${route.grade}/${route.unitId}${route.lesson ? `/${route.lesson}` : ''}`;
   if (route.view === 'materials') return `#/${route.subject}/${route.grade}/${route.unitId}/junbi`;

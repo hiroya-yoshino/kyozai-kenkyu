@@ -3,6 +3,7 @@ import { buildHash } from './router.js';
 import { findGrade, loadUnit, loadSearchIndex } from './data.js';
 import { searchIndex } from './search.js';
 import { evaluationRows, downloadCSV } from './export.js';
+import { hasKey, listDrafts } from './draft.js';
 import { openGoals, openFigure, openEvaluation } from './modal.js';
 import { getDone, setDone, unitKey, nextLesson } from './progress.js';
 
@@ -58,7 +59,22 @@ export function renderUnitList(el, index, subject, grade, currentUnitId = null) 
         h('ol', { class: 'unit-list' }, items.map((i) => unitRow(i, subject, grade, currentUnitId))));
     }).filter(Boolean);
   const tools = !currentUnitId && g?.status === 'ready' ? listTools(index, s, g, body) : [];
-  el.replaceChildren(h(titleTag, { class: 'page-title' }, `${s?.name ?? ''}　単元一覧`), tabs, ...tools, ...body);
+  const drafts = currentUnitId ? null : draftsSection(subject, grade);
+  el.replaceChildren(h(titleTag, { class: 'page-title' }, `${s?.name ?? ''}　単元一覧`), tabs, ...tools, ...body, drafts);
+}
+
+// この端末の下書きと「AIで下書きを作る」（APIキーがある端末だけ）
+function draftsSection(subject, grade) {
+  const list = listDrafts(subject, grade);
+  if (!list.length && !hasKey()) return null;
+  return h('section', { class: 'term drafts' },
+    h('h2', { class: 'term-title' }, '下書き（この端末だけ）'),
+    list.length ? h('ol', { class: 'unit-list' }, list.map((d) => h('li', { class: 'unit-row is-draft' },
+      h('a', { href: buildHash({ view: 'draft', subject, grade, draftId: d.unit.id }) },
+        h('span', { class: 'unit-no' }, '下'),
+        h('span', { class: 'unit-title' }, d.unit.title),
+        h('span', { class: 'meta' }, h('span', {}, `${d.unit.hours}時間`), h('span', { class: 'badge' }, '下書き')))))) : null,
+    hasKey() ? h('a', { class: 'button', href: buildHash({ view: 'draftNew', subject, grade }) }, 'AIで下書きを作る') : null);
 }
 
 // 公開している単元の中身をまとめて読む（検索と書き出しで使う）

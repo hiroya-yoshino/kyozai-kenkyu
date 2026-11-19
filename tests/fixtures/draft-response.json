@@ -1,0 +1,5 @@
+{
+  "id": "msg_test", "type": "message", "role": "assistant", "model": "claude-sonnet-5-5",
+  "content": [{ "type": "text", "text": "{\"title\":\"もののとけ方\",\"hours\":2,\"month\":\"1月\",\"goals\":{\"knowledge\":\"下書きの知識の目標\",\"thinking\":\"下書きの思考の目標\",\"attitude\":\"下書きの態度の目標\"},\"intro\":{\"question\":\"下書きの問い\",\"presentation\":\"下書きの提示\"},\"lessons\":[{\"n\":1,\"stage\":\"単元導入\",\"aim\":\"下書き第1時のめあて\",\"activities\":[\"活動1\"],\"summary\":\"下書き第1時のまとめ\",\"evaluation\":\"思①（発言・記述分析）：下書きの規準\"},{\"n\":2,\"stage\":\"第1次\",\"aim\":\"下書き第2時のめあて\",\"activities\":[\"活動2\"],\"summary\":\"下書き第2時のまとめ\",\"experiment\":{\"materials\":[\"食塩\",\"ビーカー\"],\"steps\":[\"手順\"],\"safety\":[\"注意\"]}}]}" }],
+  "usage": { "input_tokens": 3000, "output_tokens": 4000 }
+}

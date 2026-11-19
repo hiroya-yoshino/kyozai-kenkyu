@@ -27,3 +27,10 @@ test('単元ページの特定の時間', () => {
   assert.equal(buildHash({ view: 'unit', subject: 'rika', grade: 6, unitId: '02', lesson: 4 }), '#/rika/6/02/4');
   assert.deepEqual(parseHash('#/rika/6/02/0'), { view: 'home' });
 });
+
+test('設定と下書きの画面', () => {
+  assert.deepEqual(parseHash('#/settings'), { view: 'settings' });
+  assert.deepEqual(parseHash('#/rika/5/new'), { view: 'draftNew', subject: 'rika', grade: 5 });
+  assert.deepEqual(parseHash('#/rika/5/d-abc123'), { view: 'draft', subject: 'rika', grade: 5, draftId: 'd-abc123' });
+  for (const h of ['#/settings', '#/rika/5/new', '#/rika/5/d-abc123']) assert.equal(buildHash(parseHash(h)), h);
+});
