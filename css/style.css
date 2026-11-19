@@ -388,3 +388,12 @@ a { color: inherit; }
 .drafts .button { margin-top: 12px; }
 .unit-row.is-draft .unit-no { font-size: .9rem; color: var(--shu); }
 @media print { .site-settings, .draft-banner .form-actions { display: none !important; } }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.importer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.importer label { cursor: pointer; }
+.importer input:focus-visible + label { outline: 3px solid var(--subject); outline-offset: 2px; }
+.import-error { flex-basis: 100%; margin: 4px 0 0; color: var(--shu); font-weight: 700; }
+.import-error:empty { display: none; }
+.drafts-quiet { margin-top: 24px; }
+.drafts .form-actions { margin-top: 12px; }
+.drafts .button { margin-top: 0; }

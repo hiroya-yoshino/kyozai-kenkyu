@@ -99,3 +99,20 @@ export function saveDraft(entry) {
 export function removeDraft(id) {
   writeJSON(DRAFTS, readJSON(DRAFTS, []).filter((d) => d.unit.id !== id));
 }
+
+// ほかの端末で保存した下書きのファイル（JSON）を読み込む
+export function importDraft(text, subject, grade) {
+  let unit;
+  try {
+    unit = JSON.parse(text);
+  } catch {
+    throw new Error('読み込めませんでした。「下書きのファイルを保存」で作ったファイルを選んでください。');
+  }
+  const errors = unit && typeof unit === 'object' ? validateUnit(unit, () => true) : ['形がちがう'];
+  if (errors.length || !Array.isArray(unit.lessons)) {
+    throw new Error('読み込めませんでした。このファイルは下書きの形になっていません。');
+  }
+  if (!/^d-[a-z0-9]+$/.test(String(unit.id))) unit.id = `d-${Date.now().toString(36)}`;
+  saveDraft({ subject, grade, unit, cost: null, model: null, imported: true, createdAt: new Date().toISOString() });
+  return unit.id;
+}

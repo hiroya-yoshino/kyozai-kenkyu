@@ -79,3 +79,38 @@ test('時数と毎時間の数が合わない回答は保存せず、作り直�
   await page.goto('./#/rika/5');
   await expect(page.locator('.drafts .unit-row')).toHaveCount(0);
 });
+
+test('別の端末で保存した下書きのファイルを読み込むと、この端末の一覧に入る（キーがなくても読み込める）', async ({ browser }) => {
+  // 端末A：下書きを作ってファイルに保存する
+  const a = await browser.newContext({ acceptDownloads: true });
+  const pa = await a.newPage();
+  await pa.route(API, (route) => route.fulfill({ status: 200, contentType: 'application/json', body: OK }));
+  await setKey(pa);
+  await pa.goto('./#/rika/5/new');
+  await pa.getByLabel('単元名').fill('もののとけ方');
+  await pa.getByLabel('時数').fill('2');
+  await pa.getByRole('button', { name: '下書きを作る' }).click();
+  await expect(pa.locator('.draft-banner')).toBeVisible();
+  const [dl] = await Promise.all([pa.waitForEvent('download'), pa.getByRole('button', { name: '下書きのファイルを保存' }).click()]);
+  const file = { name: dl.suggestedFilename(), mimeType: 'application/json', buffer: Buffer.from((await (await dl.createReadStream()).toArray()).join('')) };
+  await a.close();
+
+  // 端末B：キーなしで読み込む
+  const b = await browser.newContext();
+  const pb = await b.newPage();
+  await pb.goto('./#/rika/5');
+  await pb.getByLabel('下書きのファイルを読み込む').setInputFiles(file);
+  await expect(pb.locator('.draft-banner')).toContainText('ファイルから読み込んだ下書き');
+  await expect(pb.getByRole('heading', { level: 1 })).toHaveText('もののとけ方');
+  await expect(pb.locator('details.lesson')).toHaveCount(2);
+  await pb.goto('./#/rika/5');
+  await expect(pb.locator('.drafts .unit-row', { hasText: 'もののとけ方' })).toHaveCount(1);
+  await b.close();
+});
+
+test('下書きでないファイルは読み込まず、そのことを知らせる', async ({ page }) => {
+  await page.goto('./#/rika/5');
+  await page.getByLabel('下書きのファイルを読み込む').setInputFiles({ name: 'x.json', mimeType: 'application/json', buffer: Buffer.from('{"hello":1}') });
+  await expect(page.locator('.import-error')).toContainText('読み込めませんでした');
+  await expect(page.locator('.drafts .unit-row')).toHaveCount(0);
+});

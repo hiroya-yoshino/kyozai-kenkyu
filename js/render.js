@@ -3,7 +3,7 @@ import { buildHash } from './router.js';
 import { findGrade, loadUnit, loadSearchIndex } from './data.js';
 import { searchIndex } from './search.js';
 import { evaluationRows, downloadCSV } from './export.js';
-import { hasKey, listDrafts } from './draft.js';
+import { hasKey, listDrafts, importDraft } from './draft.js';
 import { openGoals, openFigure, openEvaluation } from './modal.js';
 import { getDone, setDone, unitKey, nextLesson } from './progress.js';
 
@@ -66,7 +66,22 @@ export function renderUnitList(el, index, subject, grade, currentUnitId = null) 
 // この端末の下書きと「AIで下書きを作る」（APIキーがある端末だけ）
 function draftsSection(subject, grade) {
   const list = listDrafts(subject, grade);
-  if (!list.length && !hasKey()) return null;
+  const error = h('p', { class: 'import-error', role: 'alert' });
+  const file = h('input', { type: 'file', id: `import-${subject}-${grade}`, accept: '.json,application/json', class: 'visually-hidden',
+    onchange: async (e) => {
+      const f = e.target.files?.[0];
+      if (!f) return;
+      try {
+        const id = importDraft(await f.text(), subject, grade);
+        location.hash = buildHash({ view: 'draft', subject, grade, draftId: id });
+      } catch (err) {
+        error.textContent = err.message;
+        e.target.value = '';
+      }
+    } });
+  const importer = h('div', { class: 'importer' },
+    file, h('label', { for: file.id, class: 'button button-quiet' }, '下書きのファイルを読み込む'), error);
+  if (!list.length && !hasKey()) return h('section', { class: 'drafts drafts-quiet' }, importer);
   return h('section', { class: 'term drafts' },
     h('h2', { class: 'term-title' }, '下書き（この端末だけ）'),
     list.length ? h('ol', { class: 'unit-list' }, list.map((d) => h('li', { class: 'unit-row is-draft' },
@@ -74,7 +89,9 @@ function draftsSection(subject, grade) {
         h('span', { class: 'unit-no' }, '下'),
         h('span', { class: 'unit-title' }, d.unit.title),
         h('span', { class: 'meta' }, h('span', {}, `${d.unit.hours}時間`), h('span', { class: 'badge' }, '下書き')))))) : null,
-    hasKey() ? h('a', { class: 'button', href: buildHash({ view: 'draftNew', subject, grade }) }, 'AIで下書きを作る') : null);
+    h('div', { class: 'form-actions' },
+      hasKey() ? h('a', { class: 'button', href: buildHash({ view: 'draftNew', subject, grade }) }, 'AIで下書きを作る') : null,
+      importer));
 }
 
 // 公開している単元の中身をまとめて読む（検索と書き出しで使う）

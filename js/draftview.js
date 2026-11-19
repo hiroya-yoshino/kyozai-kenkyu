@@ -73,7 +73,7 @@ export function renderDraftView(el, { subject, subjectName, grade, draftId }) {
   renderUnit(el, entry.unit, back, `${grade}年　${subjectName}`);
   const banner = h('div', { class: 'draft-banner' },
     h('p', {}, h('strong', {}, '下書き（資料未確認）'), '　AIが作った下書きです。この端末にだけ保存されています。'),
-    h('p', { class: 'draft-cost' }, `作成にかかった料金の目安：約${entry.cost}円`),
+    h('p', { class: 'draft-cost' }, entry.imported ? 'ファイルから読み込んだ下書きです。' : `作成にかかった料金の目安：約${entry.cost}円`),
     h('div', { class: 'form-actions' },
       h('button', { type: 'button', class: 'button', onclick: () => {
         const blob = new Blob([JSON.stringify(entry.unit, null, 2)], { type: 'application/json' });
