@@ -36,3 +36,9 @@ test('オフライン用に保存するときは、ブラウザに残った古�
   const install = sw.slice(sw.indexOf("addEventListener('install'"), sw.indexOf("addEventListener('activate'"));
   assert.match(install, /cache:\s*'reload'/, 'install で cache: reload を指定していない（古いファイルが新しい版に入ってしまう）');
 });
+
+test('新しい版に切りかわったら、自動で1回だけ読み込み直す（古い画面のしくみのまま残らない）', () => {
+  const app = readFileSync(new URL('js/app.js', root), 'utf8');
+  assert.match(app, /controllerchange/, 'controllerchange で読み込み直していない');
+  assert.match(app, /navigator\.serviceWorker\.controller/, 'はじめて入れたとき（前の版がないとき）まで読み込み直してしまう');
+});

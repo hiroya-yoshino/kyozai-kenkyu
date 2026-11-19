@@ -81,5 +81,14 @@ route();
 
 // オフラインで使えるようにする（テスト用のデータを見ているときは使わない）
 if ('serviceWorker' in navigator && !new URLSearchParams(location.search).has('fixtures')) {
+  // 前の版が動いていたときだけ、新しい版に切りかわった時点で1回読み込み直す
+  // （ページだけ新しく、画面のしくみが古いままになるのを防ぐ）
+  const hadController = Boolean(navigator.serviceWorker.controller);
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloaded) return;
+    reloaded = true;
+    location.reload();
+  });
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
