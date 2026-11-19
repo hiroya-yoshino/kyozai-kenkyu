@@ -29,7 +29,7 @@ export function renderSettings(el) {
         h('button', { type: 'button', class: 'button button-quiet', onclick: () => { saveSettings({ apiKey: '' }); paint(); } }, 'キーを消す')))));
 }
 
-export function renderDraftForm(el, { subject, subjectName, grade }) {
+export function renderDraftForm(el, { subject, subjectName, grade, items = [] }) {
   const field = (id, label, attrs) => [h('label', { for: id, class: 'field-label' }, label), h('input', { id, class: 'text-input', ...attrs })];
   const error = h('p', { class: 'draft-error', role: 'alert' });
   const button = h('button', { type: 'submit', class: 'button' }, '下書きを作る');
@@ -55,12 +55,27 @@ export function renderDraftForm(el, { subject, subjectName, grade }) {
   field('d-hours', '時数', { name: 'hours', type: 'number', min: 1, max: 30, required: true, inputmode: 'numeric' }),
   field('d-month', '実施月', { name: 'month', placeholder: '例：1月（なくてもよい）' }),
   h('div', { class: 'form-actions' }, button), error);
-  el.replaceChildren(h('article', {},
+  // 参考：その学年の単元と時数（押すと入力欄に入る）
+  const fill = (it) => {
+    form.elements.title.value = it.title.replace(/（.*?）$/, '');
+    form.elements.hours.value = String(it.hours);
+    form.elements.month.value = it.month ?? '';
+    form.elements.title.focus();
+  };
+  const ref = items.length ? h('section', { class: 'unit-ref' },
+    h('h2', { class: 'section-title' }, `${grade}年${subjectName}の単元（啓林館の年間指導計画）`),
+    h('p', { class: 'note' }, '押すと、単元名・時数・実施月が入力欄に入ります。'),
+    h('ul', { class: 'ref-list' }, items.map((it) => h('li', {},
+      h('button', { type: 'button', class: `ref-row${it.kind === 'event' ? ' is-event' : ''}`, onclick: () => fill(it) },
+        h('span', { class: 'unit-no' }, it.no ? String(it.no) : ''),
+        h('span', { class: 'unit-title' }, it.title),
+        h('span', { class: 'meta' }, h('span', {}, `${it.hours}時間`), h('span', {}, it.month))))))) : null;
+  el.replaceChildren(h('article', { class: 'draft-new' },
     h('a', { class: 'button back-button', href: buildHash({ view: 'list', subject, grade }) }, '単元一覧にもどる'),
     h('p', { class: 'unit-kicker' }, `${grade}年　${subjectName}`),
     h('h1', { class: 'page-title' }, 'AIで下書きを作る'),
     h('p', { class: 'note' }, '教科書会社の資料は見ずにAIが考えた下書きです。時間配分や評価規準は、資料で確かめてから使ってください。'),
-    form));
+    h('div', { class: 'draft-layout' }, form, ref)));
 }
 
 export function renderDraftView(el, { subject, subjectName, grade, draftId }) {

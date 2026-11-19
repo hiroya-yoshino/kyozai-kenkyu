@@ -397,3 +397,16 @@ a { color: inherit; }
 .drafts-quiet { margin-top: 24px; }
 .drafts .form-actions { margin-top: 12px; }
 .drafts .button { margin-top: 0; }
+
+/* 下書きを作る画面：単元の参考一覧 */
+@media (min-width: 900px) { .draft-layout { display: grid; grid-template-columns: minmax(0, 22em) minmax(0, 1fr); gap: 40px; align-items: start; } }
+.unit-ref { margin-top: 28px; }
+@media (min-width: 900px) { .unit-ref { margin-top: 0; } }
+.ref-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.ref-row {
+  width: 100%; display: grid; grid-template-columns: 2em minmax(0, 1fr) auto; gap: 10px; align-items: baseline;
+  min-height: 48px; padding: 10px 4px; border: 0; border-bottom: 1px solid var(--rule); background: none; font: inherit; color: inherit; text-align: left; cursor: pointer;
+}
+.ref-row:hover, .ref-row:focus-visible { background: var(--subject-soft); }
+.ref-row.is-event { color: var(--ink-soft); font-size: .9rem; min-height: 40px; }
+.ref-row.is-event .unit-title { font-weight: 400; }

@@ -114,3 +114,17 @@ test('下書きでないファイルは読み込まず、そのことを知ら�
   await expect(page.locator('.import-error')).toContainText('読み込めませんでした');
   await expect(page.locator('.drafts .unit-row')).toHaveCount(0);
 });
+
+test('下書きを作る画面に、その学年の単元と時数の一覧があり、押すと単元名・時数・実施月が入る', async ({ page }) => {
+  await setKey(page);
+  await page.goto('./#/rika/5/new');
+  const ref = page.locator('.unit-ref');
+  await expect(ref.getByRole('heading', { name: '5年理科の単元（啓林館の年間指導計画）' })).toBeVisible();
+  const row = ref.getByRole('button', { name: /もののとけ方/ });
+  await expect(row).toContainText('15時間');
+  await row.click();
+  await expect(page.getByLabel('単元名')).toHaveValue('もののとけ方');
+  await expect(page.getByLabel('時数')).toHaveValue('15');
+  await expect(page.getByLabel('実施月')).toHaveValue('1〜2月');
+  await expect(ref).toContainText('台風と気象情報');
+});

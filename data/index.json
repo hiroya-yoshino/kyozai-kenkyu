@@ -8,8 +8,141 @@
       "grades": [
         {
           "grade": 5,
-          "status": "preparing",
-          "items": []
+          "status": "ready",
+          "items": [
+            {
+              "kind": "event",
+              "title": "理科のガイダンス",
+              "hours": 1,
+              "month": "4月",
+              "term": 1
+            },
+            {
+              "kind": "event",
+              "title": "花のつくり（受けつがれる生命(1)）",
+              "hours": 2,
+              "month": "4月",
+              "term": 1
+            },
+            {
+              "kind": "unit",
+              "id": "01",
+              "no": 1,
+              "title": "雲と天気の変化",
+              "hours": 7,
+              "month": "4〜5月",
+              "term": 1,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "02",
+              "no": 2,
+              "title": "植物の発芽と成長",
+              "hours": 12,
+              "month": "5〜6月",
+              "term": 1,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "03",
+              "no": 3,
+              "title": "メダカのたんじょう",
+              "hours": 7,
+              "month": "6〜7月",
+              "term": 1,
+              "status": "preparing"
+            },
+            {
+              "kind": "event",
+              "title": "台風と気象情報（天気の変化(2)）",
+              "hours": 3,
+              "month": "7月",
+              "term": 1
+            },
+            {
+              "kind": "event",
+              "title": "自由研究",
+              "hours": 2,
+              "month": "7〜9月",
+              "term": 1
+            },
+            {
+              "kind": "unit",
+              "id": "04",
+              "no": 4,
+              "title": "花から実へ",
+              "hours": 8,
+              "month": "9〜10月",
+              "term": 2,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "05",
+              "no": 5,
+              "title": "ヒトのたんじょう",
+              "hours": 6,
+              "month": "10月",
+              "term": 2,
+              "status": "preparing"
+            },
+            {
+              "kind": "event",
+              "title": "これまでの学習をつなげよう",
+              "hours": 1,
+              "month": "10月",
+              "term": 2
+            },
+            {
+              "kind": "unit",
+              "id": "06",
+              "no": 6,
+              "title": "流れる水のはたらき",
+              "hours": 12,
+              "month": "10〜11月",
+              "term": 2,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "07",
+              "no": 7,
+              "title": "ふりこのきまり",
+              "hours": 7,
+              "month": "11〜12月",
+              "term": 2,
+              "status": "preparing"
+            },
+            {
+              "kind": "event",
+              "title": "みんなで使う理科室",
+              "hours": 1,
+              "month": "1月",
+              "term": 3
+            },
+            {
+              "kind": "unit",
+              "id": "08",
+              "no": 8,
+              "title": "もののとけ方",
+              "hours": 15,
+              "month": "1〜2月",
+              "term": 3,
+              "status": "preparing"
+            },
+            {
+              "kind": "unit",
+              "id": "09",
+              "no": 9,
+              "title": "電流と電磁石",
+              "hours": 11,
+              "month": "2〜3月",
+              "term": 3,
+              "status": "preparing"
+            }
+          ]
         },
         {
           "grade": 6,

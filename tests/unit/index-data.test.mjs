@@ -38,10 +38,21 @@ test('番号のない時間は4件', () => {
   assert.deepEqual(events, ['理科のガイダンス', 'これまでの学習をつなげよう', '自由研究', 'みんなで使う理科室']);
 });
 
-test('算数・国語・5年理科は準備中', () => {
+test('算数・国語は準備中', () => {
   assert.equal(index.subjects.find((s) => s.id === 'sansu').status, 'preparing');
   assert.equal(index.subjects.find((s) => s.id === 'kokugo').status, 'preparing');
-  assert.equal(index.subjects.find((s) => s.id === 'rika').grades.find((g) => g.grade === 5).status, 'preparing');
+});
+
+test('5年理科は、啓林館の年間指導計画どおりの単元一覧があり、中身はまだ準備中', () => {
+  const g5 = index.subjects.find((s) => s.id === 'rika').grades.find((g) => g.grade === 5);
+  const u5 = g5.items.filter((i) => i.kind === 'unit');
+  assert.deepEqual(u5.map((u) => [u.no, u.title, u.hours, u.month]), [
+    [1, '雲と天気の変化', 7, '4〜5月'], [2, '植物の発芽と成長', 12, '5〜6月'], [3, 'メダカのたんじょう', 7, '6〜7月'],
+    [4, '花から実へ', 8, '9〜10月'], [5, 'ヒトのたんじょう', 6, '10月'], [6, '流れる水のはたらき', 12, '10〜11月'],
+    [7, 'ふりこのきまり', 7, '11〜12月'], [8, 'もののとけ方', 15, '1〜2月'], [9, '電流と電磁石', 11, '2〜3月']]);
+  assert.ok(u5.every((u) => u.status === 'preparing'));
+  assert.equal(g5.items.reduce((s, i) => s + i.hours, 0), 95);
+  assert.deepEqual(validateIndex(index), []);
 });
 
 test('validateIndex は単元 id の重複を見つける', () => {

@@ -32,7 +32,10 @@ async function route() {
   const subjectName = index.subjects.find((s) => s.id === r.subject)?.name ?? '';
   if (r.view === 'home') renderHome(main, index);
   else if (r.view === 'settings') renderSettings(main);
-  else if (r.view === 'draftNew') renderDraftForm(main, { subject: r.subject, subjectName, grade: r.grade });
+  else if (r.view === 'draftNew') {
+    const items = index.subjects.find((s) => s.id === r.subject)?.grades.find((g) => g.grade === r.grade)?.items ?? [];
+    renderDraftForm(main, { subject: r.subject, subjectName, grade: r.grade, items });
+  }
   else if (r.view === 'draft') renderDraftView(main, { subject: r.subject, subjectName, grade: r.grade, draftId: r.draftId });
   else if (r.view === 'list') renderUnitList(main, index, r.subject, r.grade);
   else await showUnit(r, index, token); // 単元ページと準備物の画面
