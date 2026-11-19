@@ -2,6 +2,7 @@
 import { buildHash } from './router.js';
 import { findGrade } from './data.js';
 import { openGoals, openFigure, openEvaluation } from './modal.js';
+import { getDone, setDone, unitKey, nextLesson } from './progress.js';
 
 const TERMS = { 1: '1学期', 2: '2学期', 3: '3学期' };
 
@@ -17,7 +18,17 @@ export function h(tag, attrs = {}, ...children) {
 }
 
 export function renderHome(el, index) {
+  const next = nextLesson(index);
+  const nextBox = h('section', { class: 'next-lesson' },
+    h('h2', { class: 'next-label' }, '次の授業'),
+    !next ? h('p', { class: 'next-empty' }, '指導計画表で、終わった時間に印をつけると、ここに次の授業が出ます。')
+      : next.finished ? h('p', { class: 'next-empty' }, '公開しているすべての時間が終わりました。')
+        : h('a', { class: `subject-${next.subject}`, href: buildHash({ view: 'unit', subject: next.subject, grade: next.grade, unitId: next.unitId, lesson: next.n }) },
+          h('span', { class: 'next-where' }, `${next.grade}年　${next.subjectName}　単元${next.no}`),
+          h('span', { class: 'next-title' }, next.title),
+          h('span', { class: 'next-n' }, `第${next.n}時`)));
   el.replaceChildren(
+    nextBox,
     h('h1', { class: 'page-title home-title' }, '教科'),
     h('ul', { class: 'shelf' }, index.subjects.map((s) => {
       const inner = [h('span', { class: 'subject-name' }, s.name),
@@ -48,7 +59,9 @@ export function renderUnitList(el, index, subject, grade, currentUnitId = null) 
 }
 
 function unitRow(item, subject, grade, currentUnitId) {
-  const meta = [h('span', { class: 'hours' }, `${item.hours}時間`), h('span', { class: 'month' }, item.month)];
+  const doneCount = item.kind === 'unit' ? getDone(unitKey(subject, grade, item.id)).length : 0;
+  const meta = [doneCount ? h('span', { class: 'progress', title: '終わった時間' }, `${doneCount}/${item.hours}`) : null,
+    h('span', { class: 'hours' }, `${item.hours}時間`), h('span', { class: 'month' }, item.month)];
   if (item.kind === 'event') {
     return h('li', { class: 'event-row' }, h('span', { class: 'unit-title' }, item.title), h('span', { class: 'meta' }, meta));
   }
@@ -66,7 +79,7 @@ export function renderNotReady(el, backHash) {
     h('a', { class: 'button', href: backHash }, '単元一覧へ戻る')));
 }
 
-export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null) {
+export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null, progressKey = null) {
   const intro = h('section', { class: 'intro', id: 'intro' },
     h('h2', { class: 'section-title' }, '導入のアイデア'),
     h('dl', {},
@@ -88,8 +101,8 @@ export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null
     h('section', { class: 'lessons plan' },
       h('h2', { class: 'section-title' }, '指導計画'),
       h('div', { class: 'plan-head', 'aria-hidden': 'true' },
-        h('span', { class: 'col-n' }, '時'), h('span', { class: 'col-main' }, '次・めあて'), h('span', { class: 'col-eval' }, '評価')),
-      unit.lessons.map(renderLesson)),
+        h('span', { class: 'col-done' }, '済'), h('span', { class: 'col-n' }, '時'), h('span', { class: 'col-main' }, '次・めあて'), h('span', { class: 'col-eval' }, '評価')),
+      unit.lessons.map((l) => renderLesson(l, progressKey))),
     unit.sources?.length ? renderSources(unit.sources) : null));
 }
 
@@ -119,9 +132,27 @@ function renderSources(sources) {
       src.note ? h('span', { class: 'source-note' }, `（${src.note}）`) : null))));
 }
 
-function renderLesson(lesson) {
+function doneToggle(lesson, progressKey) {
+  const btn = h('button', { type: 'button', class: 'done-toggle col-done', 'aria-label': `第${lesson.n}時を終わったにする` });
+  const paint = (on) => {
+    btn.setAttribute('aria-pressed', String(on));
+    btn.closest?.('details')?.classList.toggle('is-done', on);
+  };
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const on = btn.getAttribute('aria-pressed') !== 'true';
+    if (progressKey) setDone(progressKey, lesson.n, on);
+    paint(on);
+  });
+  queueMicrotask(() => paint(progressKey ? getDone(progressKey).includes(lesson.n) : false));
+  return btn;
+}
+
+function renderLesson(lesson, progressKey = null) {
   return h('details', { class: 'lesson', 'data-n': String(lesson.n), id: `lesson-${lesson.n}` },
     h('summary', {},
+      doneToggle(lesson, progressKey),
       h('span', { class: 'col-n' }, String(lesson.n)),
       h('span', { class: 'col-main' },
         lesson.stage ? h('span', { class: 'lesson-stage' }, lesson.stage) : null,

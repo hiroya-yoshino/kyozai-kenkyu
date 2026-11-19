@@ -21,3 +21,9 @@ test('準備物の画面', () => {
   assert.equal(buildHash({ view: 'materials', subject: 'rika', grade: 6, unitId: '05' }), '#/rika/6/05/junbi');
   assert.deepEqual(parseHash('#/rika/6/05/xyz'), { view: 'home' });
 });
+
+test('単元ページの特定の時間', () => {
+  assert.deepEqual(parseHash('#/rika/6/02/4'), { view: 'unit', subject: 'rika', grade: 6, unitId: '02', lesson: 4 });
+  assert.equal(buildHash({ view: 'unit', subject: 'rika', grade: 6, unitId: '02', lesson: 4 }), '#/rika/6/02/4');
+  assert.deepEqual(parseHash('#/rika/6/02/0'), { view: 'home' });
+});

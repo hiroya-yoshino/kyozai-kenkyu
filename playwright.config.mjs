@@ -7,6 +7,7 @@ export default defineConfig({
   testDir: 'tests/e2e',
   use: {
     baseURL: 'http://localhost:4173/kyozai-kenkyu/',
+    serviceWorkers: 'block',
     launchOptions: chrome ? { executablePath: chrome } : {},
   },
   webServer: { command: 'node tools/serve.mjs', url: 'http://localhost:4173/kyozai-kenkyu/package.json', reuseExistingServer: true },

@@ -6,7 +6,8 @@
     "test": "node --test tests/unit/*.test.mjs && node tools/check-data.mjs",
     "test:data": "node tools/check-data.mjs",
     "test:e2e": "playwright test",
-    "serve": "node tools/serve.mjs"
+    "serve": "node tools/serve.mjs",
+    "build:sw": "node tools/build-sw.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0"

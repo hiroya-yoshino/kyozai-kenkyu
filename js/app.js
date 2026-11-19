@@ -3,6 +3,7 @@ import { parseHash, buildHash } from './router.js';
 import { loadIndex, loadUnit, findItem } from './data.js';
 import { renderHome, renderUnitList, renderNotReady, renderUnit, renderLoadError } from './render.js';
 import { renderMaterials } from './materials.js';
+import { unitKey } from './progress.js';
 
 const main = document.getElementById('app');
 const side = document.getElementById('side');
@@ -48,14 +49,26 @@ async function showUnit(r, index, token) {
   const subjectName = index.subjects.find((s) => s.id === r.subject)?.name ?? '';
   const kicker = `${r.grade}年　${subjectName}`;
   if (r.view === 'materials') {
-    renderMaterials(main, unit, { kicker, unitHash: buildHash({ ...r, view: 'unit' }),
+    renderMaterials(main, unit, { kicker, unitHash: buildHash({ ...r, view: 'unit', lesson: undefined }),
       storeKey: `kyozai:junbi:${r.subject}/${r.grade}/${r.unitId}` });
     window.scrollTo(0, 0);
     return;
   }
-  renderUnit(main, unit, back, kicker, buildHash({ ...r, view: 'materials' }));
-  window.scrollTo(0, 0);
+  renderUnit(main, unit, back, kicker, buildHash({ ...r, view: 'materials', lesson: undefined }),
+    unitKey(r.subject, r.grade, r.unitId));
+  const target = r.lesson && main.querySelector(`details.lesson[data-n="${r.lesson}"]`);
+  if (target) {
+    target.open = true;
+    target.scrollIntoView({ block: 'start' });
+  } else {
+    window.scrollTo(0, 0);
+  }
 }
 
 window.addEventListener('hashchange', route);
 route();
+
+// オフラインで使えるようにする（テスト用のデータを見ているときは使わない）
+if ('serviceWorker' in navigator && !new URLSearchParams(location.search).has('fixtures')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}

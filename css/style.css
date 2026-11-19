@@ -306,3 +306,37 @@ a { color: inherit; }
 .back-button { margin-bottom: 16px; }
 .back-button::before { content: "‹"; margin-right: 8px; font-size: 1.3em; line-height: 1; }
 @media print { .back-button { display: none !important; } }
+
+/* 進み具合 */
+.plan-head, .lesson summary { grid-template-columns: 30px 2.6em minmax(0, 1fr) 5.5em; }
+@media (max-width: 479.98px) { .plan-head, .lesson summary { grid-template-columns: 28px 1.8em minmax(0, 1fr) 3.8em; gap: 8px; } }
+.plan-head .col-done { font-size: .75rem; text-align: center; }
+.done-toggle {
+  width: 28px; height: 28px; align-self: center; padding: 0; cursor: pointer;
+  border: 1.5px solid var(--rule); border-radius: 2px; background: #fff; position: relative;
+}
+.done-toggle::after { content: ""; position: absolute; inset: -9px; } /* 押せる範囲を広げる */
+.done-toggle[aria-pressed="true"] { background: var(--subject); border-color: var(--subject); }
+.done-toggle[aria-pressed="true"]::before {
+  content: ""; position: absolute; left: 8px; top: 3px; width: 7px; height: 14px;
+  border: solid #fff; border-width: 0 3px 3px 0; transform: rotate(45deg);
+}
+.lesson.is-done .col-aim, .lesson.is-done .col-n { color: var(--ink-soft); }
+.lesson-body { padding-left: calc(30px + 2.6em + 32px); }
+@media (max-width: 479.98px) { .lesson-body { padding-left: 8px; } }
+.progress { color: var(--subject); font-weight: 700; }
+
+/* ホームの「次の授業」 */
+.next-lesson { margin: 0 0 32px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 10px 0 14px; }
+.next-label { margin: 0 0 4px; font-size: .85rem; color: var(--ink-soft); }
+.next-empty { margin: 0; color: var(--ink-soft); font-size: .9rem; }
+.next-lesson a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 16px; align-items: baseline; text-decoration: none; min-height: 44px; }
+.next-where { grid-column: 1; font-size: .85rem; color: var(--subject); font-weight: 700; }
+.next-title { grid-column: 1; font-family: var(--mincho); font-weight: 600; font-size: 1.4rem; }
+.next-n { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-family: var(--mincho); font-weight: 600; font-size: 1.4rem; color: var(--subject); border-bottom: 3px solid var(--subject); }
+@media print { .done-toggle { display: none; } }
+@media (max-width: 479.98px) {
+  .plan-head, .lesson summary { grid-template-columns: 28px 1.6em minmax(0, 1fr) 4.4em; }
+  .col-eval { font-size: .74rem; }
+}
+.next-lesson { border-top: 0; padding-top: 0; }
