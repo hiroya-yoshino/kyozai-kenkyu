@@ -5,6 +5,8 @@ import { renderHome, renderUnitList, renderNotReady, renderUnit, renderLoadError
 import { renderMaterials } from './materials.js';
 import { unitKey } from './progress.js';
 import { renderSettings, renderDraftForm, renderDraftView } from './draftview.js';
+import { renderMemos } from './memoview.js';
+import { startSync, syncNow, connect, syncStatus, SYNC_STATUS, MEMOS_PULLED } from './sync.js';
 
 const main = document.getElementById('app');
 const side = document.getElementById('side');
@@ -22,16 +24,17 @@ async function route() {
     return;
   }
   if (token !== seq) return;
-  const known = r.view === 'home' || r.view === 'settings' || index.subjects.some((s) => s.id === r.subject && s.status === 'ready');
+  const known = ['home', 'settings', 'memos'].includes(r.view) || index.subjects.some((s) => s.id === r.subject && s.status === 'ready');
   if (!known) { location.replace(buildHash({ view: 'home' })); return; }
 
-  if (r.view === 'home' || r.view === 'settings') delete document.body.dataset.subject;
+  if (['home', 'settings', 'memos'].includes(r.view)) delete document.body.dataset.subject;
   else document.body.dataset.subject = r.subject;
   side.hidden = true;
   side.replaceChildren();
   const subjectName = index.subjects.find((s) => s.id === r.subject)?.name ?? '';
   if (r.view === 'home') renderHome(main, index);
   else if (r.view === 'settings') renderSettings(main);
+  else if (r.view === 'memos') await renderMemos(main, index, () => token === seq);
   else if (r.view === 'draftNew') {
     const items = index.subjects.find((s) => s.id === r.subject)?.grades.find((g) => g.grade === r.grade)?.items ?? [];
     renderDraftForm(main, { subject: r.subject, subjectName, grade: r.grade, items });
@@ -81,6 +84,39 @@ async function showUnit(r, index, token) {
 
 window.addEventListener('hashchange', route);
 route();
+
+// Googleドライブとの同期
+const chip = document.getElementById('sync-chip');
+const CHIP = {
+  syncing: ['ドライブに保存中…', 'is-busy'],
+  synced: ['ドライブに保存済み', 'is-ok'],
+  'needs-auth': ['ドライブにつなぎ直す', 'is-warn'],
+  'ready-to-connect': ['もう一度押してつなぐ', 'is-warn'],
+  loading: ['準備中…', 'is-busy'],
+  offline: ['オフライン（あとで保存）', 'is-wait'],
+  error: ['ドライブに保存できませんでした', 'is-warn'],
+};
+function paintChip(s) {
+  const c = CHIP[s.status];
+  chip.hidden = !c;
+  if (!c) return;
+  chip.textContent = c[0];
+  chip.className = `sync-chip ${c[1]}`;
+  chip.title = s.status === 'synced' ? `最後に保存：${new Date(s.at).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}` : '';
+}
+chip.addEventListener('click', () => {
+  const s = syncStatus().status;
+  if (s === 'needs-auth' || s === 'ready-to-connect') connect();
+  else syncNow();
+});
+addEventListener(SYNC_STATUS, (e) => paintChip(e.detail));
+// ほかの端末のメモを取りこんだら、書いている最中でなければ画面を描き直す
+addEventListener(MEMOS_PULLED, () => {
+  if (document.activeElement?.classList?.contains('memo-input')) return;
+  const y = scrollY;
+  route().then(() => scrollTo(0, y));
+});
+startSync();
 
 // オフラインで使えるようにする（テスト用のデータを見ているときは使わない）
 if ('serviceWorker' in navigator && !new URLSearchParams(location.search).has('fixtures')) {

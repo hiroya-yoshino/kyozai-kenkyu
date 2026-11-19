@@ -2,6 +2,7 @@
 import { h, renderUnit } from './render.js';
 import { buildHash } from './router.js';
 import { exportMemos, importMemos, memoCount } from './memo.js';
+import { connect, disconnect, isConnected, isConfigured, loadGoogle, syncNow, syncStatus, SYNC_STATUS } from './sync.js';
 import { MODELS, getSettings, saveSettings, generateDraft, saveDraft, getDraft, removeDraft } from './draft.js';
 
 export function renderSettings(el) {
@@ -14,6 +15,7 @@ export function renderSettings(el) {
   paint();
   el.replaceChildren(h('article', { class: 'settings' },
     h('h1', { class: 'page-title' }, '設定'),
+    driveSection(),
     memoSection(),
     h('section', {},
       h('h2', { class: 'section-title' }, 'AIで下書きを作る（自分専用）'),
@@ -29,6 +31,47 @@ export function renderSettings(el) {
           paint();
         } }, '保存する'),
         h('button', { type: 'button', class: 'button button-quiet', onclick: () => { saveSettings({ apiKey: '' }); paint(); } }, 'キーを消す')))));
+}
+
+// Googleドライブにメモを保存して、どの端末でも同じメモを見られるようにする
+function driveSection() {
+  const STATUS = {
+    off: 'まだつないでいません。メモはこの端末にだけ保存されています。',
+    loading: 'Googleにつなぐ準備をしています…',
+    'ready-to-connect': '準備ができました。もう一度「Googleにつなぐ」を押してください。',
+    syncing: 'ドライブに保存しています…',
+    synced: 'つないでいます。メモはGoogleドライブに保存されています。',
+    'needs-auth': 'つなぐ期限が切れました（安全のため、1時間ほどで切れます）。「つなぎ直す」を押してください。書いたメモは、この端末に残っていて、つなぎ直すと保存されます。',
+    offline: '通信できないため、いまは端末に保存しています。つながると、ドライブにも保存します。',
+    error: 'ドライブに保存できませんでした。しばらくしてから「今すぐ合わせる」を押してください。',
+  };
+  const status = h('p', { class: 'drive-status', role: 'status' });
+  const actions = h('div', { class: 'form-actions' });
+  const paint = (st = syncStatus()) => {
+    if (!status.isConnected) { removeEventListener(SYNC_STATUS, onStatus); return; }
+    const on = isConnected();
+    const key = on && st.status === 'off' ? 'needs-auth' : st.status;
+    status.textContent = STATUS[key] ?? STATUS.off;
+    if (key === 'synced' && st.at) status.textContent += `（最後に保存：${new Date(st.at).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}）`;
+    actions.replaceChildren(...(on
+      ? [key === 'needs-auth' || key === 'ready-to-connect'
+          ? h('button', { type: 'button', class: 'button', onclick: () => connect() }, 'つなぎ直す')
+          : h('button', { type: 'button', class: 'button', onclick: () => syncNow() }, '今すぐ合わせる'),
+        h('button', { type: 'button', class: 'button button-quiet', onclick: () => { disconnect(); paint(); } }, 'つなぐのをやめる')]
+      : [h('button', { type: 'button', class: 'button', onclick: () => connect() }, 'Googleにつなぐ')]));
+  };
+  const onStatus = (e) => paint(e.detail);
+  addEventListener(SYNC_STATUS, onStatus);
+  if (!isConfigured()) {
+    return h('section', {}, h('h2', { class: 'section-title' }, 'Googleドライブに保存'), h('p', { class: 'note' }, '準備中です。'));
+  }
+  loadGoogle().catch(() => {}); // 押したときにすぐ窓が開くよう、先に読みこんでおく
+  queueMicrotask(() => paint());
+  return h('section', { class: 'drive' },
+    h('h2', { class: 'section-title' }, 'Googleドライブに保存'),
+    h('p', {}, 'Googleにつなぐと、メモがGoogleドライブに保存され、iPad・パソコン・スマートフォンのどれからでも同じメモを見られます。使う端末ごとに1回つないでください。'),
+    h('p', { class: 'note' }, 'メモは、ドライブの中の「このアプリ専用の場所」に保存されます。ドライブの画面には出ず、ドライブのほかのファイルをこのアプリが見ることもありません。メモはこのアプリの「メモ」から見たり直したりできます。'),
+    status, actions);
 }
 
 // 自分のメモを、ほかの端末へ移す
@@ -55,8 +98,8 @@ function memoSection() {
   } }, 'メモを書き出す');
   const n = memoCount();
   return h('section', {},
-    h('h2', { class: 'section-title' }, '自分のメモ'),
-    h('p', {}, '単元ページに書いたメモは、この端末のブラウザにだけ保存されます。ほかの端末で使うときは、書き出したファイルをその端末で読み込んでください。'),
+    h('h2', { class: 'section-title' }, 'メモのファイル（予備）'),
+    h('p', {}, 'メモをファイルに書き出しておけます。Googleドライブにつながない端末へ移すときにも使えます。'),
     h('p', { class: 'note' }, n ? `今この端末には、${n}単元分のメモがあります。` : 'この端末には、まだメモがありません。'),
     h('p', { class: 'note' }, '読み込むと、同じ時間のメモはファイルの内容に置きかわります。ファイルにないメモはそのまま残ります。'),
     h('div', { class: 'form-actions' },

@@ -239,8 +239,31 @@ function renderPrintPlan(unit, kicker, memo = null) {
         withMemo ? h('td', { class: 'pp-memo' }, memo.lessons[l.n] ?? '') : null)))));
 }
 
+// 押すと「もう一度押すと消えます」に変わり、続けて押したときだけ消すボタン
+export function confirmButton(label, confirmLabel, onConfirm, cls = 'button button-quiet memo-delete') {
+  let armed = false;
+  let timer;
+  const btn = h('button', { type: 'button', class: cls, onclick: () => {
+    if (!armed) {
+      armed = true;
+      btn.textContent = confirmLabel;
+      btn.classList.add('is-armed');
+      timer = setTimeout(() => { armed = false; btn.textContent = label; btn.classList.remove('is-armed'); }, 4000);
+      return;
+    }
+    clearTimeout(timer);
+    armed = false;
+    btn.textContent = label;
+    btn.classList.remove('is-armed');
+    onConfirm();
+  } }, label);
+  return btn;
+}
+
+export const PRIVACY_NOTE = '児童の氏名など、個人情報は書かないでください。';
+
 // メモの入力欄。入れるたびにすぐ端末に保存する（すぐ閉じても消えないように）
-function memoBox({ id, label, value, onSave, rows = 3, placeholder }) {
+export function memoBox({ id, label, value, onSave, rows = 3, placeholder }) {
   const status = h('span', { class: 'memo-status', 'aria-live': 'polite' });
   let timer;
   const area = h('textarea', { id, class: 'memo-input', rows: String(rows), placeholder,
@@ -251,8 +274,14 @@ function memoBox({ id, label, value, onSave, rows = 3, placeholder }) {
       timer = setTimeout(() => { status.textContent = '保存しました'; }, 400);
     } });
   area.value = value;
+  const del = confirmButton('消す', 'もう一度押すと消えます', () => {
+    area.value = '';
+    onSave('');
+    status.textContent = '消しました';
+  });
+  del.setAttribute('aria-label', `${label}を消す`);
   return h('div', { class: 'memo' },
-    h('div', { class: 'memo-head' }, h('label', { for: id, class: 'memo-label' }, label), status),
+    h('div', { class: 'memo-head' }, h('label', { for: id, class: 'memo-label' }, label), status, del),
     area);
 }
 
@@ -260,7 +289,8 @@ function renderUnitMemo(memoKey, refreshPrint) {
   return h('section', { class: 'unit-memo' },
     memoBox({ id: 'memo-unit', label: '単元全体のメモ', value: getMemo(memoKey).unit, rows: 3,
       placeholder: '単元を通しての工夫、去年のふりかえり、準備のこつなど',
-      onSave: (t) => { setUnitMemo(memoKey, t); refreshPrint(); } }));
+      onSave: (t) => { setUnitMemo(memoKey, t); refreshPrint(); } }),
+    h('p', { class: 'memo-privacy' }, PRIVACY_NOTE));
 }
 
 function evalCodes(evaluation) {
@@ -315,7 +345,7 @@ function renderLesson(lesson, progressKey = null, memoKey = null, refreshPrint =
       lesson.evaluation ? h('div', { class: 'lesson-actions' },
         h('button', { type: 'button', class: 'button eval-button', onclick: () => openEvaluation(lesson.n, lesson.evaluation) }, '評価を見る')) : null,
       memoKey ? memoBox({ id: `memo-${lesson.n}`, label: `第${lesson.n}時のメモ`, value: memoText,
-        placeholder: '発問、予想される子どもの反応、板書の工夫、ふりかえりなど',
+        placeholder: '発問、予想される子どもの反応、板書の工夫、ふりかえりなど（個人情報は書かない）',
         onSave: (t) => { setLessonMemo(memoKey, lesson.n, t); paintMark(t); refreshPrint(); } }) : null,
       lesson.figure ? h('div', { class: 'lesson-figure' }, renderFigure(lesson.figure)) : null,
       lesson.experiment ? renderExperiment(lesson.experiment) : null));

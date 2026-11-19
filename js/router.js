@@ -9,6 +9,7 @@ export function parseHash(hash) {
   const [subject, grade, unitId] = parts;
   if (parts.length === 0) return { view: 'home' };
   if (parts.length === 1 && subject === 'settings') return { view: 'settings' };
+  if (parts.length === 1 && subject === 'memos') return { view: 'memos' };
   if (parts.length > 4 || !ID.test(subject)) return { view: 'home' };
   if (parts.length === 1) return { view: 'list', subject, grade: DEFAULT_GRADE };
   if (!GRADE.test(grade)) return { view: 'home' };
@@ -26,6 +27,7 @@ export function parseHash(hash) {
 
 export function buildHash(route) {
   if (route.view === 'settings') return '#/settings';
+  if (route.view === 'memos') return '#/memos';
   if (route.view === 'draftNew') return `#/${route.subject}/${route.grade}/new`;
   if (route.view === 'draft') return `#/${route.subject}/${route.grade}/${route.draftId}`;
   if (route.view === 'list') return `#/${route.subject}/${route.grade}`;

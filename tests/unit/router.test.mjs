@@ -34,3 +34,8 @@ test('設定と下書きの画面', () => {
   assert.deepEqual(parseHash('#/rika/5/d-abc123'), { view: 'draft', subject: 'rika', grade: 5, draftId: 'd-abc123' });
   for (const h of ['#/settings', '#/rika/5/new', '#/rika/5/d-abc123']) assert.equal(buildHash(parseHash(h)), h);
 });
+
+test('メモの一覧', () => {
+  assert.deepEqual(parseHash('#/memos'), { view: 'memos' });
+  assert.equal(buildHash({ view: 'memos' }), '#/memos');
+});

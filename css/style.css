@@ -435,3 +435,24 @@ a { color: inherit; }
   .pp-memo { white-space: pre-wrap; width: 28%; }
   .pp-table.has-memo { font-size: 8.5pt; }
 }
+
+/* メモを消すボタン・個人情報の注意・メモの一覧 */
+.memo-head .memo-delete { margin-left: auto; padding: 2px 10px; min-height: 0; font-size: .8rem; }
+.memo-delete.is-armed { color: var(--shu, #c0392b); border-color: currentColor; }
+.memo-privacy { font-size: .78rem; color: var(--ink-soft); margin: 6px 0 0; }
+.memos-page .memo-privacy { margin: -4px 0 20px; }
+.memo-unit { margin: 0 0 40px; }
+.memo-unit-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.memo-aim { margin: 4px 0 0; font-size: .85rem; }
+.memo-aim a { color: var(--ink-soft); }
+
+/* ヘッダー：メモ・設定と、ドライブの保存の状態 */
+.site-links { display: flex; align-items: center; gap: 16px; }
+.site-memos { font-size: .85rem; color: var(--ink-soft); min-height: 44px; display: inline-flex; align-items: center; padding: 0 4px; }
+.sync-chip { font: inherit; font-size: .75rem; padding: 2px 8px; border: 1px solid var(--rule); border-radius: 2px; background: none; color: var(--ink-soft); cursor: pointer; }
+.sync-chip.is-ok { border-color: transparent; }
+.sync-chip.is-warn { color: var(--shu, #c0392b); border-color: currentColor; font-weight: 700; }
+@media (max-width: 479.98px) { .sync-chip.is-ok, .sync-chip.is-busy { display: none; } }
+.drive-status { font-weight: 700; }
+@media print { .site-links, .memo-privacy, .memo-unit-actions { display: none !important; } }
+.settings > section + section { margin-top: 40px; }
