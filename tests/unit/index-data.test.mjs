@@ -43,16 +43,23 @@ test('算数・国語は準備中', () => {
   assert.equal(index.subjects.find((s) => s.id === 'kokugo').status, 'preparing');
 });
 
-test('5年理科は、啓林館の年間指導計画どおりの単元一覧があり、中身はまだ準備中', () => {
+test('5年理科は、啓林館の年間指導計画どおりの単元一覧があり、全単元が公開されている', () => {
   const g5 = index.subjects.find((s) => s.id === 'rika').grades.find((g) => g.grade === 5);
   const u5 = g5.items.filter((i) => i.kind === 'unit');
   assert.deepEqual(u5.map((u) => [u.no, u.title, u.hours, u.month]), [
     [1, '雲と天気の変化', 7, '4〜5月'], [2, '植物の発芽と成長', 12, '5〜6月'], [3, 'メダカのたんじょう', 7, '6〜7月'],
     [4, '花から実へ', 8, '9〜10月'], [5, 'ヒトのたんじょう', 6, '10月'], [6, '流れる水のはたらき', 12, '10〜11月'],
     [7, 'ふりこのきまり', 7, '11〜12月'], [8, 'もののとけ方', 15, '1〜2月'], [9, '電流と電磁石', 11, '2〜3月']]);
-  assert.ok(u5.every((u) => u.status === 'preparing'));
+  assert.ok(u5.every((u) => u.status === 'ready'));
   assert.equal(g5.items.reduce((s, i) => s + i.hours, 0), 95);
   assert.deepEqual(validateIndex(index), []);
+  for (const u of u5) {
+    const data = JSON.parse(readFileSync(new URL(`../../data/rika/5/${u.id}.json`, import.meta.url), 'utf8'));
+    assert.equal(data.lessons.length, u.hours, `${u.id} の時数`);
+    assert.equal(data.title, u.title);
+    assert.ok(data.related?.before?.length > 0 && data.related?.after?.length > 0, `${u.id} の関連する学習`);
+    assert.ok(data.sources.some((s) => s.url?.endsWith('rika_unit_example05.pdf')), `${u.id} の参考資料`);
+  }
 });
 
 test('validateIndex は単元 id の重複を見つける', () => {

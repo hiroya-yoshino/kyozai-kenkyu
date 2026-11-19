@@ -139,8 +139,10 @@ test('「関連する学習」に前の学年の単元と中学校の内容が�
   const five = rel.locator('li', { hasText: 'もののとけ方' });
   await expect(five).toContainText('5年');
   await expect(five).toContainText('物の溶け方');
-  await expect(five).toContainText('準備中');
-  await expect(five.locator('a')).toHaveCount(0);
+  await expect(five.locator('a')).toHaveAttribute('href', '#/rika/5/08');
+  const four = rel.locator('li', { hasText: '季節と生き物' });
+  await expect(four).toContainText('準備中');
+  await expect(four.locator('a')).toHaveCount(0);
   const six = rel.locator('li', { hasText: 'ものが燃えるしくみ' });
   await expect(six.locator('a')).toHaveAttribute('href', '#/rika/6/01');
   await expect(rel).toContainText('中学校');

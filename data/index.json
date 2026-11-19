@@ -32,7 +32,7 @@
               "hours": 7,
               "month": "4〜5月",
               "term": 1,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -42,7 +42,7 @@
               "hours": 12,
               "month": "5〜6月",
               "term": 1,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -52,7 +52,7 @@
               "hours": 7,
               "month": "6〜7月",
               "term": 1,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "event",
@@ -76,7 +76,7 @@
               "hours": 8,
               "month": "9〜10月",
               "term": 2,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -86,7 +86,7 @@
               "hours": 6,
               "month": "10月",
               "term": 2,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "event",
@@ -103,7 +103,7 @@
               "hours": 12,
               "month": "10〜11月",
               "term": 2,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -113,7 +113,7 @@
               "hours": 7,
               "month": "11〜12月",
               "term": 2,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "event",
@@ -130,7 +130,7 @@
               "hours": 15,
               "month": "1〜2月",
               "term": 3,
-              "status": "preparing"
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -140,7 +140,7 @@
               "hours": 11,
               "month": "2〜3月",
               "term": 3,
-              "status": "preparing"
+              "status": "ready"
             }
           ]
         },

@@ -21,15 +21,19 @@ test('理科を押すと6年の単元一覧が学期ごとに出る', async ({ p
   await expect(page.locator('.event-row', { hasText: '自由研究' })).toBeVisible();
 });
 
-test('5年タブは準備中', async ({ page }) => {
+test('5年タブに単元一覧が出て、単元を開ける', async ({ page }) => {
   await page.goto('./#/rika/6');
   await page.getByRole('tab', { name: '5年' }).click();
   await expect(page).toHaveURL(/#\/rika\/5$/);
-  await expect(page.locator('main')).toContainText('準備中');
+  await expect(page.locator('main .unit-row')).toHaveCount(9);
+  await expect(page.locator('main .unit-row .badge', { hasText: '準備中' })).toHaveCount(0);
+  await page.locator('main .unit-row', { hasText: 'もののとけ方' }).locator('a').click();
+  await expect(page).toHaveURL(/#\/rika\/5\/08$/);
+  await expect(page.locator('details.lesson')).toHaveCount(15);
 });
 
-test('準備中の学年の単元を直接開くと準備中表示と一覧へ戻るボタン', async ({ page }) => {
-  await page.goto('./#/rika/5/01');
+test('ない単元を直接開くと準備中表示と一覧へ戻るボタン', async ({ page }) => {
+  await page.goto('./#/rika/5/98');
   await expect(page.locator('main')).toContainText('この単元はまだ準備中です');
   await page.getByRole('link', { name: '単元一覧へ戻る' }).click();
   await expect(page).toHaveURL(/#\/rika\/5$/);

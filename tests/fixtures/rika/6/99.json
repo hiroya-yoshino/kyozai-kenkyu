@@ -67,6 +67,11 @@
   "related": {
     "before": [
       {
+        "grade": 4,
+        "curriculum": "季節と生物",
+        "unit": "季節と生き物"
+      },
+      {
         "grade": 5,
         "curriculum": "物の溶け方",
         "unit": "もののとけ方"
