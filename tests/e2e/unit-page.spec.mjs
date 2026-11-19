@@ -131,3 +131,24 @@ test('評価規準のない時間には「評価」ボタンも次も出さな�
   await expect(l2.locator('.lesson-stage')).toHaveCount(0);
   await expect(l2.getByRole('button', { name: '評価' })).toHaveCount(0);
 });
+
+test('「関連する学習」に前の学年の単元と中学校の内容が出て、アプリにある単元はリンクになる', async ({ page }) => {
+  await page.goto(URL99);
+  const rel = page.locator('section.related');
+  await expect(rel.getByRole('heading', { name: '関連する学習' })).toBeVisible();
+  const five = rel.locator('li', { hasText: 'もののとけ方' });
+  await expect(five).toContainText('5年');
+  await expect(five).toContainText('物の溶け方');
+  await expect(five).toContainText('準備中');
+  await expect(five.locator('a')).toHaveCount(0);
+  const six = rel.locator('li', { hasText: 'ものが燃えるしくみ' });
+  await expect(six.locator('a')).toHaveAttribute('href', '#/rika/6/01');
+  await expect(rel).toContainText('中学校');
+  await expect(rel).toContainText('化学変化');
+});
+
+test('関連する学習がない単元には欄を出さない', async ({ page }) => {
+  await page.goto('./?fixtures=1#/rika/6/98');
+  await expect(page.locator('details.lesson').first()).toBeVisible();
+  await expect(page.locator('section.related')).toHaveCount(0);
+});

@@ -266,5 +266,17 @@
       "title": "NotebookLM「理科（啓林館）」での抜き出し（2026-11-08）",
       "note": "docs/notebooklm/20261108-rika6-hour-plan.md"
     }
-  ]
+  ],
+  "related": {
+    "before": [
+      {
+        "grade": 3,
+        "curriculum": "身の回りの生物",
+        "unit": "植物を調べよう"
+      }
+    ],
+    "after": [
+      "植物の体のつくりと働き"
+    ]
+  }
 }

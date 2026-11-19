@@ -54,8 +54,14 @@ async function showUnit(r, index, token) {
     window.scrollTo(0, 0);
     return;
   }
+  // 前の学年の単元名から、アプリにある（公開している）単元を探す
+  const resolveUnit = (grade, name) => {
+    const g = index.subjects.find((s) => s.id === r.subject)?.grades.find((x) => x.grade === grade);
+    const it = g?.status === 'ready' && g.items.find((i) => i.kind === 'unit' && i.status === 'ready' && i.title === name);
+    return it ? buildHash({ view: 'unit', subject: r.subject, grade, unitId: it.id }) : null;
+  };
   renderUnit(main, unit, back, kicker, buildHash({ ...r, view: 'materials', lesson: undefined }),
-    unitKey(r.subject, r.grade, r.unitId));
+    unitKey(r.subject, r.grade, r.unitId), resolveUnit);
   const target = r.lesson && main.querySelector(`details.lesson[data-n="${r.lesson}"]`);
   if (target) {
     target.open = true;

@@ -131,7 +131,7 @@ export function renderNotReady(el, backHash) {
     h('a', { class: 'button', href: backHash }, '単元一覧へ戻る')));
 }
 
-export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null, progressKey = null) {
+export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null, progressKey = null, resolveUnit = () => null) {
   const intro = h('section', { class: 'intro', id: 'intro' },
     h('h2', { class: 'section-title' }, '導入のアイデア'),
     h('dl', {},
@@ -159,7 +159,26 @@ export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null
       h('div', { class: 'plan-head', 'aria-hidden': 'true' },
         h('span', { class: 'col-done' }, '済'), h('span', { class: 'col-n' }, '時'), h('span', { class: 'col-main' }, '次・めあて'), h('span', { class: 'col-eval' }, '評価')),
       unit.lessons.map((l) => renderLesson(l, progressKey))),
+    unit.related ? renderRelated(unit.related, resolveUnit) : null,
     unit.sources?.length ? renderSources(unit.sources) : null));
+}
+
+// 関連する学習：前の学年の単元（アプリにあればリンク）と中学校の内容
+function renderRelated(related, resolveUnit) {
+  const before = (related.before ?? []).map((r) => {
+    const href = resolveUnit(r.grade, r.unit);
+    return h('li', {},
+      h('span', { class: 'rel-grade' }, `${r.grade}年`),
+      href ? h('a', { href }, r.unit) : h('span', { class: 'rel-unit' }, r.unit),
+      h('span', { class: 'rel-curriculum' }, `（${r.curriculum}）`),
+      href ? null : h('span', { class: 'badge' }, '準備中'));
+  });
+  const after = related.after ?? [];
+  if (!before.length && !after.length) return null;
+  return h('section', { class: 'related' },
+    h('h2', { class: 'section-title' }, '関連する学習'),
+    before.length ? [h('h3', { class: 'rel-label' }, '前の学年'), h('ul', { class: 'rel-list' }, before)] : null,
+    after.length ? [h('h3', { class: 'rel-label' }, '中学校'), h('ul', { class: 'rel-list rel-after' }, after.map((t) => h('li', {}, t)))] : null);
 }
 
 const GOAL_LABELS = [['knowledge', '知識・技能'], ['thinking', '思考・判断・表現'], ['attitude', '主体的に学習に取り組む態度']];

@@ -50,3 +50,11 @@ test('validateIndex は単元 id の重複を見つける', () => {
   items.push({ ...items.find((i) => i.kind === 'unit') });
   assert.ok(validateIndex(dup).some((e) => e.includes('id が重複')));
 });
+
+test('6年理科の全単元に、関連する学習（前の学年と中学校）が入っている', () => {
+  for (const u of units) {
+    const data = JSON.parse(readFileSync(new URL(`../../data/rika/6/${u.id}.json`, import.meta.url), 'utf8'));
+    assert.ok(data.related?.before?.length > 0, `${u.id} の前の学年がない`);
+    assert.ok(data.related?.after?.length > 0, `${u.id} の中学校がない`);
+  }
+});

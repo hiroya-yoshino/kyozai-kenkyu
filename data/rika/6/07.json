@@ -305,5 +305,22 @@
       "title": "NotebookLM「理科（啓林館）」での抜き出し（2026-11-08）",
       "note": "docs/notebooklm/20261108-rika6-hour-plan.md"
     }
-  ]
+  ],
+  "related": {
+    "before": [
+      {
+        "grade": 4,
+        "curriculum": "雨水の行方と地面の様子",
+        "unit": "地面を流れる水のゆくえ"
+      },
+      {
+        "grade": 5,
+        "curriculum": "流れる水の働きと土地の変化",
+        "unit": "流れる水のはたらき"
+      }
+    ],
+    "after": [
+      "大地の成り立ちと変化（地層の重なりと過去の様子、火山と地震、自然の恵みと火山災害・地震災害）"
+    ]
+  }
 }

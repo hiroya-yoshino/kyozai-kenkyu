@@ -75,6 +75,11 @@ class Unit:
     def save(self, curriculum_note):
         self.goals()
         self.d['sources'] = sources(curriculum_note)
+        rel_p = os.path.join(ROOT, 'tools', 'content', 'related_rika6.json')
+        if os.path.exists(rel_p):
+            rel = json.load(open(rel_p, encoding='utf-8'))
+            if self.d['id'] in rel:
+                self.d['related'] = rel[self.d['id']]
         assert len(self.d['lessons']) == self.d['hours'], (self.d['id'], len(self.d['lessons']))
         p = os.path.join(ROOT, 'data', 'rika', '6', f"{self.d['id']}.json")
         with open(p, 'w', encoding='utf-8') as f:

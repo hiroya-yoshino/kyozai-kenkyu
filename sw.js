@@ -1,5 +1,5 @@
 // オフラインで使うための仕組み（このファイルは tools/build-sw.mjs が作る。直接編集しない）
-const VERSION = 'kyozai-76cb73f83890';
+const VERSION = 'kyozai-6ee65c836492';
 const ASSETS = [
   "./",
   "index.html",

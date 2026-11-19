@@ -357,3 +357,15 @@ a { color: inherit; }
 .sr-snippet { font-size: .88rem; color: var(--ink-soft); }
 .search-empty { color: var(--ink-soft); padding: 12px 0; border-top: 1px solid var(--rule); }
 @media print { .list-tools, .search-results { display: none !important; } }
+
+/* 関連する学習 */
+.related { margin: 0 0 32px; }
+.rel-label { margin: 12px 0 4px; font-size: .85rem; color: var(--ink-soft); }
+.rel-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.rel-list li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; padding: 8px 4px; border-bottom: 1px solid var(--rule); min-height: 44px; }
+.rel-grade { font-family: var(--mincho); font-weight: 600; color: var(--subject); }
+.rel-list a { font-weight: 700; color: var(--subject); }
+.rel-unit { font-weight: 700; }
+.rel-curriculum { font-size: .82rem; color: var(--ink-soft); }
+.rel-after li { min-height: 0; }
+@media print { .related { display: none !important; } }

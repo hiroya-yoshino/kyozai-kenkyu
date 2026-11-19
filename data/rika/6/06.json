@@ -142,5 +142,17 @@
       "title": "NotebookLM「理科（啓林館）」での抜き出し（2026-11-08）",
       "note": "docs/notebooklm/20261108-rika6-hour-plan.md"
     }
-  ]
+  ],
+  "related": {
+    "before": [
+      {
+        "grade": 4,
+        "curriculum": "月と星",
+        "unit": "月や星"
+      }
+    ],
+    "after": [
+      "月や金星の運動と見え方（地球と宇宙）"
+    ]
+  }
 }

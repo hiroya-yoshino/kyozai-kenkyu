@@ -159,5 +159,17 @@
       "title": "NotebookLM「理科（啓林館）」での抜き出し（2026-11-08）",
       "note": "docs/notebooklm/20261108-rika6-hour-plan.md"
     }
-  ]
+  ],
+  "related": {
+    "before": [
+      {
+        "grade": 4,
+        "curriculum": "季節と生物",
+        "unit": "季節と生き物"
+      }
+    ],
+    "after": [
+      "生物と環境"
+    ]
+  }
 }

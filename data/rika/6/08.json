@@ -256,5 +256,17 @@
       "title": "NotebookLM「理科（啓林館）」での抜き出し（2026-11-08）",
       "note": "docs/notebooklm/20261108-rika6-hour-plan.md"
     }
-  ]
+  ],
+  "related": {
+    "before": [
+      {
+        "grade": 5,
+        "curriculum": "振り子の運動",
+        "unit": "ふりこのきまり"
+      }
+    ],
+    "after": [
+      "力の働き"
+    ]
+  }
 }
