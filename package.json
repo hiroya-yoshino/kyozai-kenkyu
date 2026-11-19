@@ -7,9 +7,12 @@
     "test:data": "node tools/check-data.mjs",
     "test:e2e": "playwright test",
     "serve": "node tools/serve.mjs",
-    "build:sw": "node tools/build-sw.mjs"
+    "build:sw": "node tools/build-sw.mjs",
+    "build:search": "node tools/build-search.mjs",
+    "build": "node tools/build-search.mjs && node tools/build-sw.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "^1.65.0"
+    "@playwright/test": "^1.65.0",
+    "kuromoji": "^0.1.2"
   }
 }

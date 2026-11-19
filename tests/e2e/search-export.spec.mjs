@@ -40,3 +40,12 @@ test('単元一覧の「まとめて書き出す」で6年理科の全単元が1
   expect(text).toContain('ものが燃えるしくみ');
   expect(text).toContain('自然とともに生きる');
 });
+
+for (const [q, unit, n] of [['せっかいすい', '水よう液の性質', 4], ['セッカイスイ', '水よう液の性質', 4], ['石灰すい', '水よう液の性質', 4],
+  ['ようそえき', 'ヒトや動物の体', 2], ['きたいけんちかん', 'ものが燃えるしくみ', 6], ['じょうさん', '植物のつくりとはたらき', 3]]) {
+  test(`「${q}」でも見つかる（ひらがな・カタカナ・漢字まじり）`, async ({ page }) => {
+    await page.goto('./#/rika/6');
+    await page.getByRole('searchbox', { name: '単元の中を検索' }).fill(q);
+    await expect(page.locator('.search-results li').filter({ hasText: unit }).filter({ hasText: `第${n}時` }).first()).toBeVisible();
+  });
+}

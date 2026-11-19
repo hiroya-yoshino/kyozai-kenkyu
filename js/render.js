@@ -1,7 +1,7 @@
 // データから画面を組み立てる。
 import { buildHash } from './router.js';
-import { findGrade, loadUnit } from './data.js';
-import { searchUnits } from './search.js';
+import { findGrade, loadUnit, loadSearchIndex } from './data.js';
+import { searchIndex } from './search.js';
 import { evaluationRows, downloadCSV } from './export.js';
 import { openGoals, openFigure, openEvaluation } from './modal.js';
 import { getDone, setDone, unitKey, nextLesson } from './progress.js';
@@ -78,8 +78,14 @@ function listTools(index, subject, g, listBody) {
       listBody.forEach((n) => { n.hidden = false; });
       return;
     }
-    units ??= await loadReadyUnits(subject.id, g);
-    const found = searchUnits(units, q);
+    let found;
+    try {
+      const idx = await loadSearchIndex();
+      found = searchIndex(idx, q, (e) => e.s === subject.id && e.g === g.grade);
+    } catch {
+      results.replaceChildren(h('p', { class: 'search-empty' }, '検索の準備ができませんでした。通信を確かめて、もう一度入れてください。'));
+      return;
+    }
     listBody.forEach((n) => { n.hidden = true; n.remove(); });
     results.replaceChildren(found.length
       ? h('ul', {}, found.map((r) => h('li', {},
@@ -89,7 +95,7 @@ function listTools(index, subject, g, listBody) {
           h('span', { class: 'sr-snippet' }, r.snippet)))))
       : h('p', { class: 'search-empty' }, `「${q.trim()}」は見つかりませんでした。ほかの言葉でためしてください。`));
   };
-  const input = h('input', { type: 'search', id: 'unit-search', class: 'search-input', placeholder: '例：石灰水、気体検知管',
+  const input = h('input', { type: 'search', id: 'unit-search', class: 'search-input', placeholder: '例：石灰水、せっかいすい、ヨウ素液',
     'aria-label': '単元の中を検索', oninput: (e) => {
       clearTimeout(timer);
       const q = e.target.value;

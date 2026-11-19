@@ -32,3 +32,12 @@ export function findItem(index, subject, grade, unitId) {
 export function findGrade(index, subject, grade) {
   return index.subjects.find((s) => s.id === subject)?.grades.find((g) => g.grade === grade) ?? null;
 }
+
+let searchPromise;
+export function loadSearchIndex() {
+  searchPromise ??= fetch('data/search-index.json', { cache: 'no-cache' }).then((r) => {
+    if (!r.ok) throw new Error(`search-index.json: ${r.status}`);
+    return r.json();
+  }).catch((err) => { searchPromise = undefined; throw err; });
+  return searchPromise;
+}
