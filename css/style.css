@@ -132,7 +132,7 @@ a { color: inherit; }
 .back-link { display: inline-block; min-height: 44px; line-height: 44px; color: var(--ink-soft); font-size: .9rem; }
 @media (min-width: 768px) { .back-link { display: none; } }
 .unit-header {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; align-items: end;
+  display: grid; grid-template-columns: minmax(14em, 1fr) minmax(0, max-content); gap: 2px 16px; align-items: end;
   padding-bottom: 16px; margin-bottom: 28px; border-bottom: 2px solid var(--ink);
 }
 .unit-kicker { grid-column: 1; margin: 0; color: var(--subject); font-weight: 700; font-size: .9rem; letter-spacing: .1em; }
@@ -456,3 +456,12 @@ a { color: inherit; }
 .drive-status { font-weight: 700; }
 @media print { .site-links, .memo-privacy, .memo-unit-actions { display: none !important; } }
 .settings > section + section { margin-top: 40px; }
+
+/* 番号のない時間で、中身のページがあるもの（押して開ける） */
+.event-row.has-page { display: block; padding: 0; min-height: 0; }
+.event-row.has-page a {
+  display: grid; grid-template-columns: 2.4em minmax(0, 1fr) auto; align-items: baseline; gap: 10px;
+  min-height: 44px; padding: 8px 4px; color: var(--ink); text-decoration: none;
+}
+.event-row.has-page a:hover { background: var(--subject-soft); }
+.event-row.has-page a[aria-current="page"] { background: var(--subject-soft); box-shadow: inset 4px 0 0 var(--subject); }

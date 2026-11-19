@@ -22,7 +22,7 @@ export function lessonOrder(index) {
     for (const g of s.grades ?? []) {
       if (g.status !== 'ready') continue;
       for (const item of g.items) {
-        if (item.kind !== 'unit' || item.status !== 'ready') continue;
+        if (!((item.kind === 'unit' || item.kind === 'event') && item.id && item.status === 'ready')) continue;
         for (let n = 1; n <= item.hours; n++) {
           out.push({ subject: s.id, subjectName: s.name, grade: g.grade, unitId: item.id, no: item.no, title: item.title, n });
         }

@@ -54,7 +54,7 @@ export function validateIndex(index) {
         for (const key of ['kind', 'title', 'hours', 'month', 'term']) {
           if (item[key] === undefined) errors.push(`${subject.id}/${g.grade} 「${item.title ?? '?'}」の ${key} がありません`);
         }
-        if (item.kind !== 'unit') continue;
+        if (item.kind !== 'unit' && !(item.kind === 'event' && (item.id || item.status))) continue;
         if (!item.id || !item.status) errors.push(`${subject.id}/${g.grade} 「${item.title}」の id か status がありません`);
         if (seen.has(item.id)) errors.push(`${subject.id}/${g.grade} の単元 id が重複しています: ${item.id}`);
         seen.add(item.id);

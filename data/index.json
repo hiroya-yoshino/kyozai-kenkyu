@@ -12,17 +12,21 @@
           "items": [
             {
               "kind": "event",
+              "id": "11",
               "title": "理科のガイダンス",
               "hours": 1,
               "month": "4月",
-              "term": 1
+              "term": 1,
+              "status": "ready"
             },
             {
               "kind": "event",
+              "id": "12",
               "title": "花のつくり（受けつがれる生命(1)）",
               "hours": 2,
               "month": "4月",
-              "term": 1
+              "term": 1,
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -56,17 +60,21 @@
             },
             {
               "kind": "event",
+              "id": "13",
               "title": "台風と気象情報（天気の変化(2)）",
               "hours": 3,
               "month": "7月",
-              "term": 1
+              "term": 1,
+              "status": "ready"
             },
             {
               "kind": "event",
+              "id": "14",
               "title": "自由研究",
               "hours": 2,
               "month": "7〜9月",
-              "term": 1
+              "term": 1,
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -90,10 +98,12 @@
             },
             {
               "kind": "event",
+              "id": "15",
               "title": "これまでの学習をつなげよう",
               "hours": 1,
               "month": "10月",
-              "term": 2
+              "term": 2,
+              "status": "ready"
             },
             {
               "kind": "unit",
@@ -117,10 +127,12 @@
             },
             {
               "kind": "event",
+              "id": "16",
               "title": "みんなで使う理科室",
               "hours": 1,
               "month": "1月",
-              "term": 3
+              "term": 3,
+              "status": "ready"
             },
             {
               "kind": "unit",

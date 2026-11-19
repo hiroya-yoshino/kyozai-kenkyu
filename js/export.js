@@ -10,7 +10,7 @@ export function evaluationRows(unit) {
     for (const line of l.evaluation.split('\n')) {
       const m = line.match(LINE);
       const [code, how, text] = m ? [m[1], m[2], m[3]] : ['', '', line];
-      rows.push([String(unit.no ?? unit.id), unit.title, String(l.n), l.stage ?? '', code, VIEWPOINT[code[0]] ?? '', how, text]);
+      rows.push([String(unit.no ?? ''), unit.title, String(l.n), l.stage ?? '', code, VIEWPOINT[code[0]] ?? '', how, text]);
     }
   }
   return rows;

@@ -24,9 +24,15 @@ export async function loadUnit(subject, grade, unitId) {
   }
 }
 
+// 中身のページがある行か（番号のある単元と、中身をつけた番号のない時間）
+export const hasPage = (i) => (i.kind === 'unit' || i.kind === 'event') && Boolean(i.id) && i.status === 'ready';
+
+// 一覧などに出す名前（番号のない時間は名前だけ）
+export const itemLabel = (no, title) => (no ? `単元${no}　${title}` : title);
+
 export function findItem(index, subject, grade, unitId) {
   const g = findGrade(index, subject, grade);
-  return g?.items.find((i) => i.kind === 'unit' && i.id === unitId) ?? null;
+  return g?.items.find((i) => (i.kind === 'unit' || i.kind === 'event') && i.id === unitId) ?? null;
 }
 
 export function findGrade(index, subject, grade) {

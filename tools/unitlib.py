@@ -63,6 +63,7 @@ class Unit:
                   "curriculum": curriculum, "lessons": []}
         self.criteria = criteria
         self.methods = methods or {}
+        self.fixed_goals = None  # 資料に評価規準がない時間は、ねらいを直接書く
 
     def ev(self, *pairs):
         """ev(('思①', '発言・記述分析'), ...) → 改行区切りの評価規準文。
@@ -74,6 +75,9 @@ class Unit:
         return '\n'.join(out)
 
     def goals(self):
+        if self.fixed_goals:
+            self.d['goals'] = self.fixed_goals
+            return
         def join(prefix):
             items = sorted(k for k in self.criteria if k.startswith(prefix))
             return ''.join(f'{self.criteria[k][:-1]}（{k}）。' for k in items)
@@ -93,9 +97,13 @@ class Unit:
             l['experiment'] = experiment
         self.d['lessons'].append(l)
 
-    def save(self, curriculum_note):
+    def save(self, curriculum_note, plan_only=False):
         self.goals()
         self.d['sources'] = sources(curriculum_note)
+        if plan_only:
+            # 年間指導計画に時数しかない時間：毎時間の流れは Claude が作った例であることを書いておく
+            self.d['sources'] = [self.d['sources'][0], self.d['sources'][2],
+                                 {"title": "ねらい・毎時間の流れ", "note": "資料に記載がないため、Claude が作成した進め方の例"}]
         rel_p = os.path.join(ROOT, 'tools', 'content', f'related_rika{GRADE}.json')
         if os.path.exists(rel_p):
             rel = json.load(open(rel_p, encoding='utf-8'))

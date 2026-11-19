@@ -71,7 +71,8 @@ async function showUnit(r, index, token) {
     const it = g?.status === 'ready' && g.items.find((i) => i.kind === 'unit' && i.status === 'ready' && i.title === name);
     return it ? buildHash({ view: 'unit', subject: r.subject, grade, unitId: it.id }) : null;
   };
-  renderUnit(main, unit, back, kicker, buildHash({ ...r, view: 'materials', lesson: undefined }),
+  // 単元の番号は一覧（index.json）にあるので、ここで渡す（番号のない時間は番号なし）
+  renderUnit(main, { ...unit, no: item ? item.no : Number(unit.id) }, back, kicker, buildHash({ ...r, view: 'materials', lesson: undefined }),
     unitKey(r.subject, r.grade, r.unitId), resolveUnit);
   const target = r.lesson && main.querySelector(`details.lesson[data-n="${r.lesson}"]`);
   if (target) {

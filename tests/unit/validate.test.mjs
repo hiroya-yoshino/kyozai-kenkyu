@@ -48,3 +48,18 @@ test('実験のない時間の図もファイルの有無を調べる', () => {
   const u = validUnit(); u.lessons[0].figure = { src: 'figures/rika/6/x.svg', caption: 'c' };
   assert.ok(validateUnit(u, (src) => src !== 'figures/rika/6/x.svg').includes('図が見つかりません: figures/rika/6/x.svg'));
 });
+
+test('validateIndex：番号のない時間に中身をつけるときは id と status が必要で、id は単元と重ならない', async () => {
+  const { validateIndex } = await import('../../js/validate.js');
+  const base = { subjects: [{ id: 'rika', name: '理科', status: 'ready', grades: [{ grade: 5, status: 'ready', items: [
+    { kind: 'event', title: 'ガイダンス', hours: 1, month: '4月', term: 1 },
+    { kind: 'event', id: '11', status: 'ready', title: '花のつくり', hours: 2, month: '4月', term: 1 },
+    { kind: 'unit', id: '01', no: 1, status: 'ready', title: 'A', hours: 2, month: '4月', term: 1 }] }] }] };
+  assert.deepEqual(validateIndex(base), []);
+  const dup = structuredClone(base);
+  dup.subjects[0].grades[0].items[1].id = '01';
+  assert.ok(validateIndex(dup).some((e) => e.includes('id が重複')));
+  const noStatus = structuredClone(base);
+  delete noStatus.subjects[0].grades[0].items[1].status;
+  assert.ok(validateIndex(noStatus).some((e) => e.includes('status')));
+});

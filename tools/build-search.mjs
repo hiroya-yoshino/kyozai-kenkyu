@@ -20,7 +20,7 @@ function readyUnits() {
   const index = JSON.parse(readFileSync(join(root, 'data/index.json'), 'utf8'));
   const out = [];
   for (const s of index.subjects) for (const g of s.grades ?? []) for (const it of g.items ?? []) {
-    if (it.kind !== 'unit' || it.status !== 'ready') continue;
+    if (!((it.kind === 'unit' || it.kind === 'event') && it.id && it.status === 'ready')) continue;
     const file = `data/${s.id}/${g.grade}/${it.id}.json`;
     out.push({ s: s.id, g: g.grade, item: it, file, raw: readFileSync(join(root, file), 'utf8') });
   }

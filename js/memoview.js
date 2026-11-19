@@ -1,7 +1,7 @@
 // メモの一覧（すべての単元のメモを見て、直したり消したりする）
 import { h, memoBox, confirmButton, PRIVACY_NOTE } from './render.js';
 import { buildHash } from './router.js';
-import { loadUnit } from './data.js';
+import { loadUnit, itemLabel } from './data.js';
 import { listMemos, setLessonMemo, setUnitMemo, deleteAllMemosOf } from './memo.js';
 
 export async function renderMemos(el, index, isCurrent = () => true) {
@@ -16,7 +16,7 @@ export async function renderMemos(el, index, isCurrent = () => true) {
     const subject = index.subjects.find((x) => x.id === s);
     const item = subject?.grades?.find((x) => x.grade === Number(g))?.items.find((x) => x.id === u);
     const data = units[i];
-    const title = `${g}年　${subject?.name ?? s}　${item ? `単元${item.no}　${item.title}` : u}`;
+    const title = `${g}年　${subject?.name ?? s}　${item ? itemLabel(item.no, item.title) : u}`;
     const aimOf = (n) => data?.lessons?.find((l) => l.n === Number(n))?.aim ?? '';
     const boxes = [
       unit ? memoBox({ id: `m-${s}-${g}-${u}-unit`, label: '単元全体のメモ', value: unit, onSave: (t) => setUnitMemo(key, t) }) : null,

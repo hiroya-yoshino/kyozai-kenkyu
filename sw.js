@@ -1,5 +1,5 @@
 // オフラインで使うための仕組み（このファイルは tools/build-sw.mjs が作る。直接編集しない）
-const VERSION = 'kyozai-ca0864cd18c8';
+const VERSION = 'kyozai-722ae26bf531';
 const ASSETS = [
   "./",
   "index.html",
@@ -15,6 +15,12 @@ const ASSETS = [
   "data/rika/5/07.json",
   "data/rika/5/08.json",
   "data/rika/5/09.json",
+  "data/rika/5/11.json",
+  "data/rika/5/12.json",
+  "data/rika/5/13.json",
+  "data/rika/5/14.json",
+  "data/rika/5/15.json",
+  "data/rika/5/16.json",
   "data/rika/6/01.json",
   "data/rika/6/02.json",
   "data/rika/6/03.json",
@@ -54,6 +60,12 @@ const ASSETS = [
   "figures/rika/5/09-5.svg",
   "figures/rika/5/09-7.svg",
   "figures/rika/5/09-8.svg",
+  "figures/rika/5/11-1.svg",
+  "figures/rika/5/12-1.svg",
+  "figures/rika/5/12-2.svg",
+  "figures/rika/5/13-1.svg",
+  "figures/rika/5/15-1.svg",
+  "figures/rika/5/16-1.svg",
   "figures/rika/6/01-2.svg",
   "figures/rika/6/01-3.svg",
   "figures/rika/6/01-4.svg",

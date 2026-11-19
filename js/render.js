@@ -1,6 +1,6 @@
 // データから画面を組み立てる。
 import { buildHash } from './router.js';
-import { findGrade, loadUnit, loadSearchIndex } from './data.js';
+import { findGrade, loadUnit, loadSearchIndex, hasPage, itemLabel } from './data.js';
 import { searchIndex } from './search.js';
 import { evaluationRows, downloadCSV } from './export.js';
 import { getMemo, setLessonMemo, setUnitMemo } from './memo.js';
@@ -28,7 +28,7 @@ export function renderHome(el, index) {
     !next ? h('p', { class: 'next-empty' }, '指導計画表で、終わった時間に印をつけると、ここに次の授業が出ます。')
       : next.finished ? h('p', { class: 'next-empty' }, '公開しているすべての時間が終わりました。')
         : h('a', { class: `subject-${next.subject}`, href: buildHash({ view: 'unit', subject: next.subject, grade: next.grade, unitId: next.unitId, lesson: next.n }) },
-          h('span', { class: 'next-where' }, `${next.grade}年　${next.subjectName}　単元${next.no}`),
+          h('span', { class: 'next-where' }, `${next.grade}年　${next.subjectName}${next.no ? `　単元${next.no}` : ''}`),
           h('span', { class: 'next-title' }, next.title),
           h('span', { class: 'next-n' }, `第${next.n}時`)));
   el.replaceChildren(
@@ -97,7 +97,7 @@ function draftsSection(subject, grade) {
 
 // 公開している単元の中身をまとめて読む（検索と書き出しで使う）
 async function loadReadyUnits(subjectId, g) {
-  const items = g.items.filter((i) => i.kind === 'unit' && i.status === 'ready');
+  const items = g.items.filter(hasPage);
   const units = await Promise.all(items.map((i) => loadUnit(subjectId, g.grade, i.id)));
   return units.map((u, k) => u && { ...u, no: items[k].no }).filter(Boolean);
 }
@@ -124,7 +124,7 @@ function listTools(index, subject, g, listBody) {
     results.replaceChildren(found.length
       ? h('ul', {}, found.map((r) => h('li', {},
         h('a', { href: buildHash({ view: 'unit', subject: subject.id, grade: g.grade, unitId: r.unitId, lesson: r.n }) },
-          h('span', { class: 'sr-where' }, `単元${r.no}　${r.title}　第${r.n}時`),
+          h('span', { class: 'sr-where' }, `${itemLabel(r.no, r.title)}　第${r.n}時`),
           h('span', { class: 'sr-fields' }, r.fields.join('・')),
           h('span', { class: 'sr-snippet' }, r.snippet)))))
       : h('p', { class: 'search-empty' }, `「${q.trim()}」は見つかりませんでした。ほかの言葉でためしてください。`));
@@ -145,10 +145,15 @@ function listTools(index, subject, g, listBody) {
 }
 
 function unitRow(item, subject, grade, currentUnitId) {
-  const doneCount = item.kind === 'unit' ? getDone(unitKey(subject, grade, item.id)).length : 0;
+  const doneCount = hasPage(item) ? getDone(unitKey(subject, grade, item.id)).length : 0;
   const meta = [doneCount ? h('span', { class: 'progress', title: '終わった時間' }, `${doneCount}/${item.hours}`) : null,
     h('span', { class: 'hours' }, `${item.hours}時間`), h('span', { class: 'month' }, item.month)];
   if (item.kind === 'event') {
+    if (hasPage(item)) {
+      return h('li', { class: 'event-row has-page' },
+        h('a', { href: buildHash({ view: 'unit', subject, grade, unitId: item.id }), 'aria-current': item.id === currentUnitId ? 'page' : null },
+          h('span', { class: 'unit-title' }, item.title), h('span', { class: 'meta' }, meta)));
+    }
     return h('li', { class: 'event-row' }, h('span', { class: 'unit-title' }, item.title), h('span', { class: 'meta' }, meta));
   }
   return h('li', { class: `unit-row${item.status === 'ready' ? '' : ' is-preparing'}` },
@@ -186,11 +191,12 @@ export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null
       h('p', { class: 'unit-meta' }, h('span', {}, `全${unit.hours}時間`), h('span', {}, unit.month)),
       h('div', { class: 'unit-actions' },
         h('button', { id: 'open-goals', type: 'button', class: 'button goals-button', onclick: () => openGoals(unit.goals) }, '単元の目標'),
-        materialsHash ? h('a', { class: 'button', href: materialsHash }, '準備物') : null,
+        materialsHash && unit.lessons.some((l) => l.experiment) ? h('a', { class: 'button', href: materialsHash }, '準備物') : null,
         h('button', { type: 'button', class: 'button', onclick: () => window.print() }, '計画表を印刷'),
         h('button', { type: 'button', class: 'button button-quiet', onclick: () => {
           const [grade, subjectName] = kicker.split('　');
-          downloadCSV(`${grade}${subjectName}_単元${unit.no ?? Number(unit.id)}_${unit.title}_評価規準.csv`, evaluationRows({ ...unit, no: unit.no ?? Number(unit.id) }));
+          const label = unit.no ? `単元${unit.no}_` : '';
+          downloadCSV(`${grade}${subjectName}_${label}${unit.title}_評価規準.csv`, evaluationRows({ ...unit, no: unit.no ?? '' }));
         } }, '評価規準を書き出す'))),
     printPlan,
     intro,
