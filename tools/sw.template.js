@@ -2,8 +2,10 @@
 const VERSION = 'kyozai-__VERSION__';
 const ASSETS = [];
 
+// ブラウザに残った古いファイルを混ぜないよう、保存するときは必ずサーバーから取り直す
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  const fresh = ASSETS.map((url) => new Request(url, { cache: 'reload' }));
+  event.waitUntil(caches.open(VERSION).then((c) => c.addAll(fresh)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {

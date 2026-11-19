@@ -23,6 +23,7 @@ export function listAssets() {
 export function computeVersion(assets = listAssets()) {
   const hash = createHash('sha256');
   for (const a of assets) if (a !== './') hash.update(a).update(readFileSync(join(root, a)));
+  hash.update(readFileSync(join(root, 'tools', 'sw.template.js'))); // 仕組みを変えたときも版を変える
   return hash.digest('hex').slice(0, 12);
 }
 

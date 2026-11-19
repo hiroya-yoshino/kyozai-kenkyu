@@ -1,5 +1,5 @@
 // オフラインで使うための仕組み（このファイルは tools/build-sw.mjs が作る。直接編集しない）
-const VERSION = 'kyozai-6b197484ef4b';
+const VERSION = 'kyozai-76cb73f83890';
 const ASSETS = [
   "./",
   "index.html",
@@ -72,8 +72,10 @@ const ASSETS = [
   "js/store.js"
 ];
 
+// ブラウザに残った古いファイルを混ぜないよう、保存するときは必ずサーバーから取り直す
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  const fresh = ASSETS.map((url) => new Request(url, { cache: 'reload' }));
+  event.waitUntil(caches.open(VERSION).then((c) => c.addAll(fresh)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {

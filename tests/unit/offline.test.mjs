@@ -31,3 +31,8 @@ test('ホーム画面に追加するための設定がある', () => {
 test('ファイルの中身を変えたら sw.js の版も変わっている（npm run build:sw のし忘れを防ぐ）', () => {
   assert.ok(sw.includes(`kyozai-${computeVersion()}`), 'sw.js の版が古い。npm run build:sw を実行する');
 });
+
+test('オフライン用に保存するときは、ブラウザに残った古いファイルを使わず、必ずサーバーから取り直す', () => {
+  const install = sw.slice(sw.indexOf("addEventListener('install'"), sw.indexOf("addEventListener('activate'"));
+  assert.match(install, /cache:\s*'reload'/, 'install で cache: reload を指定していない（古いファイルが新しい版に入ってしまう）');
+});
