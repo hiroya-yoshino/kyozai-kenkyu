@@ -3,6 +3,7 @@ import { buildHash } from './router.js';
 import { findGrade, loadUnit, loadSearchIndex } from './data.js';
 import { searchIndex } from './search.js';
 import { evaluationRows, downloadCSV } from './export.js';
+import { getMemo, setLessonMemo, setUnitMemo } from './memo.js';
 import { hasKey, listDrafts, importDraft } from './draft.js';
 import { openGoals, openFigure, openEvaluation } from './modal.js';
 import { getDone, setDone, unitKey, nextLesson } from './progress.js';
@@ -60,7 +61,7 @@ export function renderUnitList(el, index, subject, grade, currentUnitId = null) 
     }).filter(Boolean);
   const tools = !currentUnitId && g?.status === 'ready' ? listTools(index, s, g, body) : [];
   const drafts = currentUnitId ? null : draftsSection(subject, grade);
-  el.replaceChildren(h(titleTag, { class: 'page-title' }, `${s?.name ?? ''}　単元一覧`), tabs, ...tools, ...body, drafts);
+  el.replaceChildren(...[h(titleTag, { class: 'page-title' }, `${s?.name ?? ''}　単元一覧`), tabs, ...tools, ...body, drafts].filter(Boolean));
 }
 
 // この端末の下書きと「AIで下書きを作る」（APIキーがある端末だけ）
@@ -171,6 +172,12 @@ export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null
       h('dt', {}, '問い'), h('dd', { class: 'kyokasho' }, unit.intro.question),
       unit.intro.presentation ? [h('dt', {}, '提示の仕方'), h('dd', {}, unit.intro.presentation)] : null));
 
+  // 自分のメモは、進み具合と同じく公開している単元だけにつける（下書きにはつけない）
+  const memoKey = progressKey;
+  const printPlan = h('div', { class: 'print-plan-wrap' });
+  const refreshPrint = () => printPlan.replaceChildren(renderPrintPlan(unit, kicker, memoKey ? getMemo(memoKey) : null));
+  refreshPrint();
+
   el.replaceChildren(h('article', { class: 'unit' },
     h('a', { class: 'back-link', href: backHash }, '単元一覧にもどる'),
     h('header', { class: 'unit-header' },
@@ -185,13 +192,14 @@ export function renderUnit(el, unit, backHash, kicker = '', materialsHash = null
           const [grade, subjectName] = kicker.split('　');
           downloadCSV(`${grade}${subjectName}_単元${unit.no ?? Number(unit.id)}_${unit.title}_評価規準.csv`, evaluationRows({ ...unit, no: unit.no ?? Number(unit.id) }));
         } }, '評価規準を書き出す'))),
-    renderPrintPlan(unit, kicker),
+    printPlan,
     intro,
+    memoKey ? renderUnitMemo(memoKey, refreshPrint) : null,
     h('section', { class: 'lessons plan' },
       h('h2', { class: 'section-title' }, '指導計画'),
       h('div', { class: 'plan-head', 'aria-hidden': 'true' },
         h('span', { class: 'col-done' }, '済'), h('span', { class: 'col-n' }, '時'), h('span', { class: 'col-main' }, '次・めあて'), h('span', { class: 'col-eval' }, '評価')),
-      unit.lessons.map((l) => renderLesson(l, progressKey))),
+      unit.lessons.map((l) => renderLesson(l, progressKey, memoKey, refreshPrint))),
     unit.related ? renderRelated(unit.related, resolveUnit) : null,
     unit.sources?.length ? renderSources(unit.sources) : null));
 }
@@ -217,15 +225,42 @@ function renderRelated(related, resolveUnit) {
 const GOAL_LABELS = [['knowledge', '知識・技能'], ['thinking', '思考・判断・表現'], ['attitude', '主体的に学習に取り組む態度']];
 
 // 印刷用の指導計画表（画面には出さず、印刷のときだけ表示する）
-function renderPrintPlan(unit, kicker) {
+function renderPrintPlan(unit, kicker, memo = null) {
+  const withMemo = Boolean(memo && Object.keys(memo.lessons).length);
   return h('section', { class: 'print-plan', 'aria-hidden': 'true' },
     h('p', { class: 'pp-title' }, `${kicker}　${unit.title}（全${unit.hours}時間・${unit.month}）`),
     h('dl', { class: 'pp-goals' }, GOAL_LABELS.flatMap(([k, label]) => [h('dt', {}, label), h('dd', {}, unit.goals?.[k] ?? '')])),
-    h('table', { class: 'pp-table' },
-      h('thead', {}, h('tr', {}, ['時', '次', 'めあて', 'まとめ', '評価'].map((t) => h('th', {}, t)))),
+    memo?.unit ? h('div', { class: 'pp-unit-memo' }, h('span', { class: 'pp-memo-label' }, '単元のメモ'), h('p', {}, memo.unit)) : null,
+    h('table', { class: `pp-table${withMemo ? ' has-memo' : ''}` },
+      h('thead', {}, h('tr', {}, ['時', '次', 'めあて', 'まとめ', '評価', withMemo ? 'メモ' : null].filter(Boolean).map((t) => h('th', {}, t)))),
       h('tbody', {}, unit.lessons.map((l) => h('tr', {},
         h('td', { class: 'pp-n' }, String(l.n)), h('td', {}, l.stage ?? ''), h('td', {}, l.aim), h('td', {}, l.summary),
-        h('td', { class: 'pp-eval' }, evalCodes(l.evaluation)))))));
+        h('td', { class: 'pp-eval' }, evalCodes(l.evaluation)),
+        withMemo ? h('td', { class: 'pp-memo' }, memo.lessons[l.n] ?? '') : null)))));
+}
+
+// メモの入力欄。入れるたびにすぐ端末に保存する（すぐ閉じても消えないように）
+function memoBox({ id, label, value, onSave, rows = 3, placeholder }) {
+  const status = h('span', { class: 'memo-status', 'aria-live': 'polite' });
+  let timer;
+  const area = h('textarea', { id, class: 'memo-input', rows: String(rows), placeholder,
+    oninput: (e) => {
+      onSave(e.target.value);
+      status.textContent = '';
+      clearTimeout(timer);
+      timer = setTimeout(() => { status.textContent = '保存しました'; }, 400);
+    } });
+  area.value = value;
+  return h('div', { class: 'memo' },
+    h('div', { class: 'memo-head' }, h('label', { for: id, class: 'memo-label' }, label), status),
+    area);
+}
+
+function renderUnitMemo(memoKey, refreshPrint) {
+  return h('section', { class: 'unit-memo' },
+    memoBox({ id: 'memo-unit', label: '単元全体のメモ', value: getMemo(memoKey).unit, rows: 3,
+      placeholder: '単元を通しての工夫、去年のふりかえり、準備のこつなど',
+      onSave: (t) => { setUnitMemo(memoKey, t); refreshPrint(); } }));
 }
 
 function evalCodes(evaluation) {
@@ -257,15 +292,20 @@ function doneToggle(lesson, progressKey) {
   return btn;
 }
 
-function renderLesson(lesson, progressKey = null) {
+function renderLesson(lesson, progressKey = null, memoKey = null, refreshPrint = () => {}) {
+  const memoText = memoKey ? (getMemo(memoKey).lessons[lesson.n] ?? '') : '';
+  const memoMark = h('span', { class: 'col-memo', title: 'メモあり' }, 'メモ');
+  const paintMark = (text) => { memoMark.hidden = !text.trim(); if (memoMark.hidden) memoMark.remove(); else aimCol.append(memoMark); };
+  const aimCol = h('span', { class: 'col-main' },
+    lesson.stage ? h('span', { class: 'lesson-stage' }, lesson.stage) : null,
+    h('span', { class: 'col-aim' }, lesson.aim),
+    lesson.experiment ? h('span', { class: 'col-tag' }, '実験あり') : null);
+  paintMark(memoText);
   return h('details', { class: 'lesson', 'data-n': String(lesson.n), id: `lesson-${lesson.n}` },
     h('summary', {},
       doneToggle(lesson, progressKey),
       h('span', { class: 'col-n' }, String(lesson.n)),
-      h('span', { class: 'col-main' },
-        lesson.stage ? h('span', { class: 'lesson-stage' }, lesson.stage) : null,
-        h('span', { class: 'col-aim' }, lesson.aim),
-        lesson.experiment ? h('span', { class: 'col-tag' }, '実験あり') : null),
+      aimCol,
       h('span', { class: 'col-eval' }, evalCodes(lesson.evaluation))),
     h('div', { class: 'lesson-body' },
       h('p', { class: 'aim-box kyokasho' }, h('span', { class: 'mark', title: 'めあて' }, 'め'), h('span', {}, lesson.aim)),
@@ -274,6 +314,9 @@ function renderLesson(lesson, progressKey = null) {
       h('p', { class: 'summary-box kyokasho' }, h('span', { class: 'mark', title: 'まとめ' }, 'ま'), h('span', {}, lesson.summary)),
       lesson.evaluation ? h('div', { class: 'lesson-actions' },
         h('button', { type: 'button', class: 'button eval-button', onclick: () => openEvaluation(lesson.n, lesson.evaluation) }, '評価を見る')) : null,
+      memoKey ? memoBox({ id: `memo-${lesson.n}`, label: `第${lesson.n}時のメモ`, value: memoText,
+        placeholder: '発問、予想される子どもの反応、板書の工夫、ふりかえりなど',
+        onSave: (t) => { setLessonMemo(memoKey, lesson.n, t); paintMark(t); refreshPrint(); } }) : null,
       lesson.figure ? h('div', { class: 'lesson-figure' }, renderFigure(lesson.figure)) : null,
       lesson.experiment ? renderExperiment(lesson.experiment) : null));
 }

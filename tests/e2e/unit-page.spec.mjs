@@ -152,3 +152,10 @@ test('関連する学習がない単元には欄を出さない', async ({ page 
   await expect(page.locator('details.lesson').first()).toBeVisible();
   await expect(page.locator('section.related')).toHaveCount(0);
 });
+
+test('単元ページの横の単元一覧に、よけいな文字（null）が出ない', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 900 });
+  await page.goto('./#/rika/6/01');
+  await expect(page.locator('.side')).toContainText('ものが燃えるしくみ');
+  await expect(page.locator('.side')).not.toContainText('null');
+});

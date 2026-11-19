@@ -410,3 +410,28 @@ a { color: inherit; }
 .ref-row:hover, .ref-row:focus-visible { background: var(--subject-soft); }
 .ref-row.is-event { color: var(--ink-soft); font-size: .9rem; min-height: 40px; }
 .ref-row.is-event .unit-title { font-weight: 400; }
+
+/* 自分のメモ：罫線の入ったノートの欄。教科書の内容（め・ま）と見分けがつくよう、書き手の欄として控えめにする */
+.memo { margin: 20px 0 8px; }
+.memo-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+.memo-label { font-weight: 700; font-size: .9rem; }
+.memo-status { font-size: .8rem; color: var(--ink-soft); }
+.memo-input {
+  width: 100%; box-sizing: border-box; font: inherit; line-height: 2rem; color: var(--ink);
+  padding: 0 10px; border: 1px solid var(--rule); border-left: 4px solid var(--subject); border-radius: 2px;
+  background: #fff repeating-linear-gradient(transparent 0 calc(2rem - 1px), var(--rule) calc(2rem - 1px) 2rem);
+  background-attachment: local; resize: vertical; min-height: 6rem;
+}
+.memo-input:focus-visible { outline: 3px solid var(--subject); outline-offset: 1px; }
+.unit-memo { margin: 24px 0; }
+.unit-memo .memo-label { font-family: var(--mincho); font-size: 1.15rem; font-weight: 600; }
+.col-memo { align-self: flex-start; font-weight: 700; padding: 0 6px; font-size: .75rem; border: 1px solid var(--subject); color: var(--subject); border-radius: 2px; vertical-align: 1px; }
+.memo-import-status { min-height: 1.5em; }
+@media print {
+  .unit-memo, .memo { display: none !important; }
+  .pp-unit-memo { margin: 0 0 4mm; font-size: 9pt; border: .5pt solid #555; padding: 1.5mm 2mm; }
+  .pp-unit-memo p { margin: .5mm 0 0; white-space: pre-wrap; }
+  .pp-memo-label { font-weight: 700; }
+  .pp-memo { white-space: pre-wrap; width: 28%; }
+  .pp-table.has-memo { font-size: 8.5pt; }
+}

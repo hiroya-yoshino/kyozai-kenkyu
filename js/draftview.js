@@ -1,6 +1,7 @@
 // 設定画面・下書きを作る画面・下書きの表示
 import { h, renderUnit } from './render.js';
 import { buildHash } from './router.js';
+import { exportMemos, importMemos, memoCount } from './memo.js';
 import { MODELS, getSettings, saveSettings, generateDraft, saveDraft, getDraft, removeDraft } from './draft.js';
 
 export function renderSettings(el) {
@@ -13,6 +14,7 @@ export function renderSettings(el) {
   paint();
   el.replaceChildren(h('article', { class: 'settings' },
     h('h1', { class: 'page-title' }, '設定'),
+    memoSection(),
     h('section', {},
       h('h2', { class: 'section-title' }, 'AIで下書きを作る（自分専用）'),
       h('p', {}, 'Anthropic の APIキーを入れた端末でだけ、単元一覧に「AIで下書きを作る」が出ます。キーはこの端末のブラウザにだけ保存され、ほかの人には見えません。'),
@@ -27,6 +29,40 @@ export function renderSettings(el) {
           paint();
         } }, '保存する'),
         h('button', { type: 'button', class: 'button button-quiet', onclick: () => { saveSettings({ apiKey: '' }); paint(); } }, 'キーを消す')))));
+}
+
+// 自分のメモを、ほかの端末へ移す
+function memoSection() {
+  const status = h('p', { class: 'memo-import-status', role: 'status' });
+  const file = h('input', { type: 'file', id: 'memo-import', accept: '.json,application/json', class: 'visually-hidden',
+    onchange: async (e) => {
+      const f = e.target.files?.[0];
+      if (!f) return;
+      try {
+        status.textContent = `${importMemos(await f.text())}単元のメモを読み込みました。`;
+      } catch (err) {
+        status.textContent = err.message;
+      }
+      e.target.value = '';
+    } });
+  const exportButton = h('button', { type: 'button', class: 'button', onclick: () => {
+    const d = new Date();
+    const ymd = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+    const a = h('a', { href: URL.createObjectURL(new Blob([exportMemos()], { type: 'application/json' })), download: `${ymd}-教材研究メモ.json` });
+    document.body.append(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  } }, 'メモを書き出す');
+  const n = memoCount();
+  return h('section', {},
+    h('h2', { class: 'section-title' }, '自分のメモ'),
+    h('p', {}, '単元ページに書いたメモは、この端末のブラウザにだけ保存されます。ほかの端末で使うときは、書き出したファイルをその端末で読み込んでください。'),
+    h('p', { class: 'note' }, n ? `今この端末には、${n}単元分のメモがあります。` : 'この端末には、まだメモがありません。'),
+    h('p', { class: 'note' }, '読み込むと、同じ時間のメモはファイルの内容に置きかわります。ファイルにないメモはそのまま残ります。'),
+    h('div', { class: 'form-actions' },
+      exportButton,
+      file, h('label', { for: file.id, class: 'button button-quiet' }, 'メモのファイルを読み込む')),
+    status);
 }
 
 export function renderDraftForm(el, { subject, subjectName, grade, items = [] }) {
